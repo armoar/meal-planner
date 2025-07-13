@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --font-base: 'Inter', system-ui, sans-serif;
+	--color-primary-500: #6badf3;
+	--color-secondary-500: #af99ff;
+	--color-tertiary-500: #ee99ff;
+	--color-success-500: #41b99b;
+	--color-warning-500: #fdcd49;
+	--color-error-500: #f25f5f;
+	--color-surface-500: #d1d1d1;
+	--color-primary-950: #17395e;
+	--color-secondary-950: #3b2e6b;
+	--color-tertiary-950: #632a6f;
+	--color-success-950: #013c2d;
+	--color-warning-950: #805100;
+	--color-error-950: #750000;
+	--color-surface-950: #121212;
+}
+
+body {
+	font-family: var(--font-base);
+}
+
+.btn {
+	padding: 0.5rem 1rem;
+	border-radius: 0.375rem;
+	font-weight: 600;
+	color: var(--color-primary-950);
+	background-color: var(--color-primary-500);
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+.btn:hover {
+	background-color: #7db5f9; /* o usa filter si prefieres */
+}
+
+.btn-secondary {
+	background-color: var(--color-secondary);
+}
+.btn-success {
+	background-color: var(--color-success);
+}
+.btn-error {
+	background-color: var(--color-error);
+}
+.btn-warning {
+	background-color: var(--color-warning);
+	color: black;
+}
+
+.input {
+	width: 100%;
+	padding: 0.5rem;
+	border: 1px solid #ccc;
+	border-radius: 0.375rem;
+}
+.input:focus {
+	border-color: var(--color-primary);
+	outline: none;
+	box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.alert {
+	padding: 1rem;
+	border-radius: 0.375rem;
+	color: white;
+}
+.alert-success {
+	background-color: var(--color-success);
+}
+.alert-error {
+	background-color: var(--color-error);
+}
