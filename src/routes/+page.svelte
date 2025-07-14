@@ -1,5 +1,5 @@
 <script>
-	// Opcional: puedes importar más adelante un botón o navegación
+	import { goto } from '$app/navigation';
 </script>
 
 <main class="min-h-screen bg-[var(--color-surface)] flex flex-col justify-center items-center px-6 py-12 space-y-8 text-center">
@@ -23,7 +23,9 @@
 		</ul>
 	</div>
 
-	<a href="/foods" class="btn mt-4">Empezar</a>
+	<button on:click={() => goto('/firebase-test')}	class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+  	Ver MealTypes
+	</button>
 
 	<footer class="text-sm text-gray-500 mt-10">
 		Meal Planner · Proyecto en desarrollo
