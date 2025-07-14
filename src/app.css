@@ -1,76 +1,379 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* === 1. Reset CSS básico === */
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* === 2. Fuente principal: Inter === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 :root {
-    --font-base: 'Inter', system-ui, sans-serif;
+	font-family: 'Inter', sans-serif;
+
+/* === 3. Variables globales (modo claro) === */
+	--color-bg: #ffffff;
+	--color-text: #212121;
+	--color-muted: #666666;
 	--color-primary-500: #6badf3;
 	--color-secondary-500: #af99ff;
 	--color-tertiary-500: #ee99ff;
 	--color-success-500: #41b99b;
 	--color-warning-500: #fdcd49;
 	--color-error-500: #f25f5f;
+	--color-error-500-hover: #cf3030;
 	--color-surface-500: #d1d1d1;
-	--color-primary-950: #17395e;
+	--color-primary-950: #11345a;
+	--color-primary-950-hover: #20548b;
 	--color-secondary-950: #3b2e6b;
 	--color-tertiary-950: #632a6f;
 	--color-success-950: #013c2d;
-	--color-warning-950: #805100;
+	--color-warning-950: #523400;
 	--color-error-950: #750000;
 	--color-surface-950: #121212;
+	
+
+	--radius-sm: 0.35rem;
+	--radius-md: 0.5rem;
+	--radius-lg: 1rem;
+
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+	--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+	--shadow-lg: 0 7px 9px rgba(0, 0, 0, 0.15);
+
+	--z-header: 1000;
+	--z-modal: 1100;
+	--z-toast: 1200;
 }
 
+/* === 4. Modo oscuro (preparado) === */
+[data-theme='dark'] {
+	--color-bg: #1a1a1a;
+	--color-text: #f2f2f2;
+	--color-muted: #999999;
+}
+
+/* === 5. Estilos base globales === */
+html,
 body {
-	font-family: var(--font-base);
+	height: 100%;
+	background-color: var(--color-bg);
+	color: var(--color-text);
+	font-family: 'Inter', sans-serif;
+	font-size: 16px;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
 }
 
-.btn {
-	padding: 0.5rem 1rem;
-	border-radius: 0.375rem;
+a {
+	color: var(--color-primary);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-weight: 600;
-	color: var(--color-primary-950);
-	background-color: var(--color-primary-500);
-	cursor: pointer;
-	transition: background-color 0.2s ease;
-}
-.btn:hover {
-	background-color: #7db5f9; /* o usa filter si prefieres */
+	color: var(--color-text);
 }
 
+button {
+	font-family: inherit;
+	cursor: pointer;
+	border: none;
+	background: none;
+}
+
+/* ===   6. Utilidades visuales base === */
+/* === Base común para todos los botones === */
+.btn,
+.btn-icon,
+.btn-secondary,
+.btn-icon-secondary,
+.btn-warning,
+.btn-icon-warning,
+.btn-text {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	font-weight: 600;
+	border-radius: var(--radius-md);
+	font-size: 1rem;
+	transition: all 0.2s ease-in-out;
+	cursor: pointer;
+	box-sizing: border-box;
+	height: 2.5rem;
+	padding: 0 1rem;
+}
+
+.btn:hover,
+.btn-icon:hover,
+.btn-secondary:hover,
+.btn-icon-secondary:hover,
+.btn-warning:hover,
+.btn-icon-warning:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-lg);
+}
+
+/* === 1. Botón primario === */
+.btn {
+	background-color: var(--color-primary-950);
+	border: 2px solid var(--color-primary-950);
+	color: white;
+	border: none;
+	box-shadow: var(--shadow-md);
+	transition: all 0.2s ease;
+}
+
+.btn:hover {
+	box-shadow: var(--shadow-lg);
+	transform: translateY(-2px);
+	background-color: var(--color-primary-950-hover);
+}
+
+/* === 2. Botón secundario === */
 .btn-secondary {
-	background-color: var(--color-secondary);
+	background-color: transparent;
+	border: 2px solid var(--color-primary-950);
+	color: var(--color-primary-950);
+	box-shadow: var(--shadow-md);
 }
-.btn-success {
-	background-color: var(--color-success);
+
+.btn-secondary:hover {
+	box-shadow: var(--shadow-lg);
+	transform: translateY(-2px);
+	color: var(--color-primary-950-hover);
 }
-.btn-error {
-	background-color: var(--color-error);
-}
+
+/* === 3. Botón para acciones peligrosas === */
 .btn-warning {
-	background-color: var(--color-warning);
-	color: black;
+	background-color: var(--color-error-500);
+	border: 2px solid var(--color-primary-950);
+	color: white;
+	border: none;
+	box-shadow: var(--shadow-md);
+	transition: all 0.2s ease;
+}
+
+.btn-warning:hover {
+	box-shadow: var(--shadow-lg);
+	background-color: var(--color-error-500-hover);
+}
+
+/* === 4. Botón solo texto === */
+.btn-text {
+	display: inline-flex;
+	background-color: transparent;
+	color: var(--color-primary-950);
+	padding: 0.25rem 0.5rem;
+	font-weight: 500;
+	border: none;
+	transition: all 0.2s ease-in-out;
+}
+
+.btn-text:hover {
+	font-weight: 700;
+	transition: all 0.2s ease-in-out;
+}
+
+/* === 5. Botón con icono a la izquierda === */
+/* Utiliza .btn-icon junto a un <Icon /> como primer hijo */
+.btn-icon {
+	background-color: var(--color-primary-950);
+	color: white;
+	box-shadow: var(--shadow-md);
+}
+
+.btn-icon:hover {
+	box-shadow: var(--shadow-lg);
+	transform: translateY(-2px);
+	background-color: var(--color-primary-950-hover);
+}
+
+/* === 6. Botón secundario con icono a la izquierda === */
+/* Utiliza .btn-icon junto a un <Icon /> como primer hijo */
+
+.btn-icon-secondary {
+	border: 2px solid var(--color-primary-950);
+	border-radius: var(--radius-md);
+	background-color: transparent;
+	color: var(--color-primary-950);
+	transition: all 0.2s ease-in-out;
+	box-sizing: border-box;
+	box-shadow: var(--shadow-md);
+}
+
+.btn-icon-secondary:hover {
+	box-shadow: var(--shadow-lg);
+	transform: translateY(-2px);
+	color: var(--color-primary-950-hover);
+}
+
+/* === 7. Botón para acciones peligrosas con icono a la izquierda === */
+/* Utiliza .btn-icon junto a un <Icon /> como primer hijo */
+
+.btn-icon-warning {
+	background-color: var(--color-error-500);
+	color: white;
+	box-shadow: var(--shadow-md);
+}
+
+.btn-icon-warning:hover {
+	box-shadow: var(--shadow-lg);
+	transform: translateY(-2px);
+	background-color: var(--color-error-500-hover);
+}
+
+/* === 8. Botón solo texto con icono a la izquierda === */
+/* Utiliza .btn-icon junto a un <Icon /> como primer hijo */
+.btn-icon-text {
+	display: inline-flex;
+	background-color: transparent;
+	color: var(--color-primary-950);
+	padding: 0.25rem 0.5rem;
+	font-weight: 500;
+	border: none;
+	transition: all 0.2s ease-in-out;
+}
+
+.btn-icon-text:hover {
+	font-weight: 700;
+	transition: all 0.2s ease-in-out;
+}
+
+/* === Formulario === */
+
+.form-error {
+	color: var(--color-error-500);
+	font-size: 0.875rem;
+	margin-top: 0.25rem;
+}
+
+.form-success {
+	color: var(--color-success-500);
+	font-size: 0.875rem;
+	margin-top: 0.25rem;
+}
+
+label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 0.25rem;
+	color: var(--color-text);
 }
 
 .input {
-	width: 100%;
 	padding: 0.5rem;
+	border-radius: var(--radius-sm);
 	border: 1px solid #ccc;
-	border-radius: 0.375rem;
-}
-.input:focus {
-	border-color: var(--color-primary);
-	outline: none;
-	box-shadow: 0 0 0 2px var(--color-primary);
+	width: 100%;
+	font-size: 1rem;
 }
 
+.input:focus {
+	outline: none;
+	/* elimina el borde azul por defecto */
+	border-color: var(--color-primary-500);
+	/* borde del color primario */
+	box-shadow: 0 0 0 1px rgba(107, 173, 243, 0.4);
+	/* halo suave */
+}
+
+/* === Alertas === */
 .alert {
 	padding: 1rem;
-	border-radius: 0.375rem;
-	color: white;
+	border-radius: var(--radius-md);
+	font-weight: 500;
+	border-left: 4px solid;
 }
-.alert-success {
-	background-color: var(--color-success);
+
+/* Info */
+.alert-info {
+	background-color: rgba(107, 173, 243, 0.2);
+	/* color-primary-500 con opacidad */
+	color: var(--color-primary-950);
+	border-color: var(--color-primary-500);
 }
+
+/* Warning */
+.alert-warning {
+	background-color: rgba(253, 205, 73, 0.25);
+	/* warning-500 con opacidad */
+	color: var(--color-warning-950);
+	border-color: var(--color-warning-500);
+}
+
+/* Error */
 .alert-error {
-	background-color: var(--color-error);
+	background-color: rgba(242, 95, 95, 0.2);
+	/* error-500 con opacidad */
+	color: var(--color-error-950);
+	border-color: var(--color-error-500);
+}
+
+/* === Card === */
+.card {
+	background-color: white;
+	border-radius: var(--radius-lg);
+	padding: 1rem;
+	box-shadow: var(--shadow-md);
+}
+
+.card a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.card a:hover {
+	text-decoration: underline;
+}
+
+/* === Table === */
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th,
+td {
+	padding: 0.75rem;
+	border-bottom: 1px solid var(--color-surface-500);
+	text-align: left;
+}
+
+thead {
+	background-color: var(--color-surface-500);
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: var(--color-surface-950);
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: var(--color-primary-950);
+	border-radius: 10px;
+	border: 2px solid transparent;
+	background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: #224d7c;
 }
