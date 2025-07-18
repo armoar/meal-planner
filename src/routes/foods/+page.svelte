@@ -1,4 +1,1 @@
-<!-- Interfaz principal de la ruta -->
-<script lang="ts">
-	export let data;
-</script>
+<h1>Alimentos</h1>
