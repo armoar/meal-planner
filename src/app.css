@@ -327,9 +327,11 @@ label {
 /* === Card === */
 .card {
 	background-color: white;
-	border-radius: var(--radius-lg);
+	border-radius: var(--radius-md);
 	padding: 1rem;
-	box-shadow: var(--shadow-md);
+	border: 1px solid var(--color-surface-700);
+	box-shadow: var(--shadow-sm);
+	transition: all 0.2s ease;
 }
 
 .card a {
@@ -396,26 +398,51 @@ thead {
 }
 
 .main-content {
+	position: relative;
+	z-index: 1;
 	flex: 1;
 	padding: 2rem;
 	overflow-y: auto;
+	overflow-x: hidden;
+	background-color: transparent;
+	width: 100%;
+
 }
+
+.watermark {
+	position: absolute;
+	top: 50%;
+	right: 0;
+	transform: translateY(-50%) rotate(-20deg);
+	width: 750px;
+	height: 750px;
+	background-image: url('/logo_mp_950.svg');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	opacity: 0.05;
+	pointer-events: none;
+	z-index: 0;
+}
+
+
 
 .route-transition {
 	animation: fade-in-up 0.s ease-out;
-  }
-  
-  @keyframes fade-in-up {
+}
+
+@keyframes fade-in-up {
 	0% {
-	  opacity: 0;
-	  transform: translateY(4px);
+		opacity: 0;
+		transform: translateY(4px);
 	}
+
 	100% {
-	  opacity: 1;
-	  transform: translateY(0);
+		opacity: 1;
+		transform: translateY(0);
 	}
-  }
-  
+}
+
 
 /* Sidebar */
 .header {
@@ -560,16 +587,16 @@ thead {
 	justify-content: space-between;
 	width: 100%;
 	gap: 0.5rem;
-  }
-  
-  .sidebar__nav-chevron {
+}
+
+.sidebar__nav-chevron {
 	margin-left: auto;
 	display: flex;
 	align-items: center;
-  }
-  
-  
-  .sidebar__nav-subitems {
+}
+
+
+.sidebar__nav-subitems {
 	border-left: 2px solid var(--color-surface-700);
 	margin-left: 1.5rem;
 	padding-left: 0.75rem;
@@ -578,7 +605,7 @@ thead {
 	gap: 0.25rem;
 	margin-top: 0.2rem;
 	margin-bottom: 0.4rem;
-  }
+}
 
 .sidebar__footer {
 	font-size: 0.75rem;
@@ -607,37 +634,48 @@ thead {
 	inset: 0;
 	background: rgba(0, 0, 0, 0.4);
 	z-index: 30;
-  }
+}
 
-  /* Solo afecta en móvil */
+/* Solo afecta en móvil */
 @media (max-width: 768px) {
-	.sidebar{
+	.watermark {
 		display: none;
 	}
-	.sidebar--mobile {
-	  position: fixed;
-	  top: 0;
-	  left: 0;
-	  width: 280px;
-	  height: 100vh;
-	  z-index: 40;
-	  background: var(--color-surface-500);
-	  padding: 0rem 1rem;
-	  flex-direction: column;
-	  transform: translateX(-100%);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+	.sidebar {
+		display: none;
 	}
-  
+
+	.sidebar--mobile {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 280px;
+		height: 100vh;
+		z-index: 40;
+		background: var(--color-surface-500);
+		padding: 0rem 1rem;
+		flex-direction: column;
+		transform: translateX(-100%);
+		opacity: 0;
+		pointer-events: none;
+		transition: transform 0.3s ease, opacity 0.3s ease;
+	}
+
 	.sidebar--mobile.open {
 		display: flex;
 		transform: translateX(0);
 		opacity: 1;
 		pointer-events: auto;
-	  }
-	
-  }
-  
+	}
 
-  
+	.btn-icon {
+		width: 2.5rem;
+		padding: 0;
+		justify-content: center;
+	}
+
+	.btn-icon>span {
+		display: none;
+	}
+
+}
