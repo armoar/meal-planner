@@ -1,17 +1,9 @@
 // Firebase access functions (CRUD)
 import { db } from '$lib/firebase';
-import { collection, addDoc, serverTimestamp, getDocs } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import type { Unit } from './types';
 
 export const unitsCollection = collection(db, 'units');
-
-export async function createUnit(unit: Omit<Unit, 'id' | 'createdAt' | 'updatedAt'>) {
-  await addDoc(unitsCollection, {
-    ...unit,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
-  });
-}
 
 export async function initDefaultUnits() {
   const snapshot = await getDocs(unitsCollection);
@@ -32,3 +24,24 @@ export async function initDefaultUnits() {
     await createUnit(unit);
   }
 }
+
+export async function createUnit(unit: Omit<Unit, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  const ref = await addDoc(unitsCollection, {
+    ...unit,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+
+  return ref.id;
+}
+
+export async function updateUnit(id: string, data: Partial<Unit>) {
+	const ref = doc(db, 'units', id);
+	await updateDoc(ref, data);
+}
+
+export async function deleteUnit(id: string) {
+	const ref = doc(db, 'units', id);
+	await deleteDoc(ref);
+}
+

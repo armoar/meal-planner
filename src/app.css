@@ -343,6 +343,20 @@ label {
 	text-decoration: underline;
 }
 
+.highlight {
+	animation: flash 1s ease-out;
+}
+
+@keyframes flash {
+	0% {
+		background-color: var(--color-primary-500);
+		opacity:0.1;
+	}
+	100% {
+		background-color: white;
+	}
+}
+
 /* === Table === */
 table {
 	width: 100%;

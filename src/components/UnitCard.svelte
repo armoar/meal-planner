@@ -3,11 +3,12 @@
   export let name: string;
   export let symbol: string;
   export let conversionFactor: number;
+  export let isNew: boolean = false;
   export let onEdit: () => void;
   export let onDelete: () => void;
 </script>
 
-<div class="card" style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+<div class="card {isNew ? 'highlight' : ''}" style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
   <div
     style="
       flex: 1;

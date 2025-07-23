@@ -14,5 +14,8 @@ export const load = async () => {
     ...doc.data()
   })) as Unit[];
 
+  units.sort((a, b) => a.name.localeCompare(b.name));
+
   return { units };
+
 };

@@ -12,6 +12,8 @@
       symbol: '',
       conversionFactor: 1
     };
+
+    export let isEditMode: boolean = false;
   
     let form: UnitFormData = { ...initialData };
     let errors: Partial<Record<keyof UnitFormData, string>> = {};
@@ -81,8 +83,9 @@
     <!-- Botón de guardar -->
     <div style="display: flex; justify-content: flex-end;">
       <button type="submit" class="btn">
-        Guardar unidad
+        {isEditMode ? 'Guardar cambios' : 'Crear unidad'}
       </button>
+      
     </div>
   </form>
   
