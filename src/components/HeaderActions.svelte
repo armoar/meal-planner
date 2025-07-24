@@ -16,7 +16,7 @@
   "
 >
 	<div>
-		<h1 style="font-size: 1.7rem; font-weight: 600; margin-bottom: 0.25rem;">{title}</h1>
+		<h1 style="font-size: 1.7rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--color-primary-950)">{title}</h1>
 	</div>
 
 	<div>

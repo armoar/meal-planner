@@ -1,23 +1,24 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  export let onClose: () => void;
+	import { X } from 'lucide-svelte';
+	import { onMount } from 'svelte';
+	export let onClose: () => void;
+	export let title: string;
 
-  let modalElement: HTMLDivElement;
+	let modalElement: HTMLDivElement;
 
-  onMount(() => {
-    modalElement?.focus();
-  });
+	onMount(() => {
+		modalElement?.focus();
+	});
 </script>
 
-  
-  <!-- Fondo oscuro -->
-  <div
-    class="modal-overlay"
-    role="presentation"
-    on:click={onClose}
-    tabindex="-1"
-    aria-hidden="true"
-    style="
+<!-- Fondo oscuro -->
+<div
+	class="modal-overlay"
+	role="presentation"
+	on:click={onClose}
+	tabindex="-1"
+	aria-hidden="true"
+	style="
       position: fixed;
       top: 0;
       left: 0;
@@ -29,42 +30,56 @@
       justify-content: center;
       z-index: var(--z-modal);
     "
-  >
-  
-    <!-- Contenedor del modal -->
-    <div
-      bind:this={modalElement}
-      role="dialog"
-      aria-modal="true"
-      tabindex="-1"
-      class="card"
-      on:click|stopPropagation
-      on:keydown={(e) => {
-        if (e.key === 'Escape') onClose();
-      }}
-      style="
-        background: white;
-        max-width: 500px;
-        width: 90%;
-        padding: 1.5rem;
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-lg);
-        position: relative;
-        outline: none;
-      "
-    >
-      <!-- Botón de cerrar -->
-      <button
-        class="btn-text"
-        on:click={onClose}
-        style="position: absolute; top: 1rem; right: 1rem;"
-        aria-label="Cerrar modal"
-      >
-        ✕
-      </button>
-  
-      <!-- Contenido dinámico del modal -->
-      <slot />
-    </div>
-  </div>
-  
+>
+	<!-- Contenedor del modal -->
+	<div
+		bind:this={modalElement}
+		role="dialog"
+		aria-modal="true"
+		tabindex="-1"
+		class="card"
+		on:click|stopPropagation
+		on:keydown={(e) => {
+			if (e.key === 'Escape') onClose();
+		}}
+		style="
+      background: white;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 3.5rem;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      outline: none;
+    "
+	>
+		<div style="margin-bottom: 2rem;">
+			<h2 style="position: absolute; top: 2rem; color:var(--color-primary-950)">{title}</h2>
+			<!-- Botón de cerrar -->
+			<button
+				class="btn-text"
+				on:click={onClose}
+				style="position: absolute; top: 2rem; right: 2.5rem;"
+				aria-label="Cerrar modal"
+			>
+				<X />
+			</button>
+		</div>
+		<!-- Contenido dinámico del modal -->
+		<slot />
+	</div>
+</div>
+
+<style>
+	@media (max-width: 768px) {
+		.card {
+			width: 95% !important;
+			max-width: 95% !important;
+			max-height: 90vh !important;
+			padding: 3rem !important;
+			border-radius: var(--radius-md) !important;
+		}
+	}
+</style>

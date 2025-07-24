@@ -108,6 +108,7 @@
 				isEditMode = false;
 				selectedUnit = null;
 			}}
+			title={isEditMode ? 'Editar unidad' : 'Nueva unidad'}
 		>
 			<UnitForm
 				initialData={selectedUnit ?? { name: '', symbol: '', conversionFactor: 1 }}
