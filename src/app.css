@@ -61,11 +61,14 @@
 html,
 body {
 	height: 100%;
+	margin: 0;
+	padding: 0;
 	background-color: var(--color-bg);
 	color: var(--color-text);
 	font-family: 'Inter', sans-serif;
 	font-size: 16px;
 	line-height: 1.5;
+	overflow: hidden;
 	-webkit-font-smoothing: antialiased;
 }
 
@@ -275,14 +278,14 @@ label {
 	color: var(--color-primary-950);
 	white-space: nowrap;
 	overflow: hidden;
-  text-overflow: ellipsis;
+	text-overflow: ellipsis;
 }
 
 .form-col {
 	flex: 1;
 	min-width: 120px;
 	max-width: 250px;
-  }
+}
 
 .input {
 	padding: 0.5rem;
@@ -291,7 +294,7 @@ label {
 	width: 100%;
 	font-size: 1rem;
 	max-width: 100%;
-	  
+
 }
 
 .input:focus {
@@ -357,8 +360,9 @@ label {
 @keyframes flash {
 	0% {
 		background-color: var(--color-primary-500);
-		opacity:0.1;
+		opacity: 0.1;
 	}
+
 	100% {
 		background-color: white;
 	}
@@ -388,19 +392,14 @@ thead {
 }
 
 ::-webkit-scrollbar-thumb {
-	background-color: var(--color-surface-950);
-	border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-	background-color: var(--color-primary-950);
+	background-color: var(--color-surface-700);
 	border-radius: 10px;
 	border: 2px solid transparent;
 	background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background-color: var(--color-primary-950-hover);
+	background-color: var(--color-surface-950-hover);
 }
 
 /* === MAIN === */
@@ -418,16 +417,30 @@ thead {
 	flex-direction: column;
 }
 
-.main-content {
-	position: relative;
-	z-index: 1;
+.route-container {
 	flex: 1;
-	padding: 2rem;
-	overflow-y: auto;
-	overflow-x: hidden;
-	background-color: transparent;
-	width: 100%;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
 
+.scroll-area {
+	height: calc(100dvh - 10rem); /* ajusta si usas más o menos padding */
+	max-width: 620px;
+	overflow-y: auto;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding-bottom: 3rem;
+}
+
+.main-content {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	padding: 2rem;
 }
 
 .watermark {
@@ -445,8 +458,6 @@ thead {
 	pointer-events: none;
 	z-index: 0;
 }
-
-
 
 .route-transition {
 	animation: fade-in-up 0.s ease-out;
@@ -662,6 +673,7 @@ thead {
 	.watermark {
 		display: none;
 	}
+
 	.sidebar {
 		display: none;
 	}

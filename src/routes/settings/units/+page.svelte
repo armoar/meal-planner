@@ -65,11 +65,8 @@
 
 	async function handleDeleteUnit(unitId: string) {
 		const confirmed = confirm('¿Estás seguro de que quieres eliminar esta unidad?');
-
 		if (!confirmed) return;
-
 		await deleteUnit(unitId);
-
 		units = units.filter((u) => u.id !== unitId);
 	}
 
@@ -80,27 +77,28 @@
 	}
 </script>
 
-<div class="flex h-screen flex-col" style="gap: 1rem;">
+<div>
 	<HeaderActions title="Unidades">
 		<button class="btn-icon" on:click={() => (showModal = true)}>
-			<Plus style="width: 1rem; height: 1rem;" />
+			<Plus />
 			<span>Nueva unidad</span>
 		</button>
 	</HeaderActions>
 
-	<CardList>
-		{#each units as unit (unit.id)}
-		<UnitCard
-		name={unit.name}
-		symbol={unit.symbol}
-		conversionFactor={unit.conversionFactor}
-		isNew={unit.id === newCreatedId}
-		onEdit={() => openEditModal(unit)}
-		onDelete={() => unit.id && handleDeleteUnit(unit.id)}
-	/>
-	
-		{/each}
-	</CardList>
+	<div class="scroll-area">
+		<CardList>
+			{#each units as unit (unit.id)}
+				<UnitCard
+					name={unit.name}
+					symbol={unit.symbol}
+					conversionFactor={unit.conversionFactor}
+					isNew={unit.id === newCreatedId}
+					onEdit={() => openEditModal(unit)}
+					onDelete={() => unit.id && handleDeleteUnit(unit.id)}
+				/>
+			{/each}
+		</CardList>
+	</div>
 	{#if showModal}
 		<Modal
 			onClose={() => {

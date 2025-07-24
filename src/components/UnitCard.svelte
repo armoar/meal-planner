@@ -16,9 +16,7 @@
       align-items: center;
       justify-content: space-between;
       border: none;
-      background: white;
       padding: 0;
-      z-index: 1;
     "
   >
     <div style="display: flex; align-items: center; gap: 1rem;">
