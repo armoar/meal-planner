@@ -1,6 +1,10 @@
-// Lógica de carga de datos para esta ruta
+import { getAllCategories, initDefaultCategories } from '$modules/categories/api';
 
 export async function load() {
-	// const data = await getSomething();
-	return {};
+	await initDefaultCategories();
+	const categories = await getAllCategories();
+
+	return {
+		categories
+	};
 }

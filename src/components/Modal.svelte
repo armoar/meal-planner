@@ -45,7 +45,7 @@
 		style="
       background: white;
       width: 100%;
-      max-width: 600px;
+      max-width: 500px;
       max-height: 90vh;
       overflow-y: auto;
       padding: 3.5rem;
