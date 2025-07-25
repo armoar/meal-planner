@@ -1,7 +1,9 @@
-// TypeScript interfaces for this module// src/modules/mealTypes/types.ts
+import type { Timestamp } from 'firebase/firestore';
+
 export interface MealType {
-    id: string;
-    name: string;
-    order: number;
-  }
-  
+	id: string;
+	name: string;
+	order: number;
+	createdAt: Timestamp;
+	updatedAt: Timestamp;
+}
