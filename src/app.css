@@ -27,6 +27,7 @@
 	--color-error-500-hover: #cf3030;
 	--color-surface-500: #f3f3f3;
 	--color-surface-700: #e2e2e2;
+	--color-surface-950: #7c7c7c;
 	--color-primary-950: #11345a;
 	--color-primary-950-hover: #20548b;
 	--color-secondary-950: #3b2e6b;
@@ -34,7 +35,6 @@
 	--color-success-950: #013c2d;
 	--color-warning-950: #523400;
 	--color-error-950: #750000;
-	--color-surface-950: #121212;
 
 
 	--radius-sm: 0.35rem;

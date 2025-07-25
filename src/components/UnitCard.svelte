@@ -53,7 +53,7 @@
   on:click={onEdit}
   class="btn-icon"
   style="width: 2rem; height: 2rem;padding:0rem"
-  aria-label="Eliminar unidad"
+  aria-label="Editar unidad"
 >
 <Edit style="width: 1rem; height: 1rem;" />
   </button>
