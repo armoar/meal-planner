@@ -28,22 +28,27 @@ export async function getAllMealTypes(): Promise<MealType[]> {
 // Inicializar comidas por defecto si no existen
 export async function initDefaultMealTypes() {
 	const defaultMealTypes = [
-		{ id: '1', name: 'Desayuno', order: 1 },
-		{ id: '2', name: 'Almuerzo', order: 2 },
-		{ id: '3', name: 'Cena', order: 3 },
-		{ id: '4', name: 'Snack', order: 4 }
+		{ name: 'Desayuno', order: 1 },
+		{ name: 'Almuerzo', order: 2 },
+		{ name: 'Cena', order: 3 },
+		{ name: 'Snack', order: 4 }
 	];
 
+	const snapshot = await getDocs(mealTypesRef);
+	const existingNames = snapshot.docs.map((doc) => doc.data().name);
+
 	for (const mt of defaultMealTypes) {
-		const mtRef = doc(mealTypesRef, mt.id);
-		await setDoc(mtRef, {
-			name: mt.name,
-			order: mt.order,
+		if (existingNames.includes(mt.name)) continue;
+
+		const newDocRef = doc(mealTypesRef); // ID automático
+		await setDoc(newDocRef, {
+			...mt,
 			createdAt: serverTimestamp(),
 			updatedAt: serverTimestamp()
-		}, { merge: true });
+		});
 	}
 }
+
 
 // Crear nuevo mealType (máximo 5)
 export async function createMealType(name: string, order: number): Promise<void> {
@@ -76,5 +81,10 @@ export async function deleteMealType(id: string) {
 
 // Devolver los IDs protegidos
 export function getProtectedMealTypeIds() {
-	return protectedMealTypeIds;
+	return [
+		'FnogFf6cfTH6uxF9Qkib', // Desayuno
+		'AbyFky4XqKyfyhFgIBzv', // Almuerzo
+		'YssnWH7OIVU7uBHThAbm', // Cena
+		'ZMsSUFbF6HSuGWuPM9U5'  // Snack
+	];
 }
