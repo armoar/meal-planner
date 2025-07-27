@@ -1,6 +1,12 @@
-// Lógica de carga de datos para esta ruta
+import { initDefaultFoods, getAllFoods } from '$modules/foods/api';
+import type { Food } from '$modules/foods/types';
+import type { PageLoad } from './$types';
 
-export async function load() {
-	// const data = await getSomething();
-	return {};
-}
+export const load: PageLoad = async () => {
+	await initDefaultFoods();
+	const foods: Food[] = await getAllFoods();
+
+	return {
+		foods
+	};
+};

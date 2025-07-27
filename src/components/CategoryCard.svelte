@@ -35,7 +35,7 @@
 		align-items: center;
 		justify-content: center;
 		font-size: 1.25rem;
-		box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+		
 	"
 			>
 				{icon}
