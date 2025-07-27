@@ -81,14 +81,14 @@
 </script>
 
 <div>
-	<HeaderActions title="Categorías">
+	<HeaderActions title="Categorías" maxWidth="600px">
 		<button class="btn-icon" on:click={() => (showModal = true)}>
 			<Plus />
 			<span>Nueva Categoría</span>
 		</button>
 	</HeaderActions>
 
-	<div class="scroll-area">
+	<div class="scroll-area dynamic" style="--scroll-offset: 10rem; max-width: 600px;">
 		<CardList>
 			{#each categories as category (category.id)}
 				<CategoryCard

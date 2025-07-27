@@ -78,14 +78,14 @@
 </script>
 
 <div>
-	<HeaderActions title="Unidades">
+	<HeaderActions title="Unidades" maxWidth="600px">
 		<button class="btn-icon" on:click={() => (showModal = true)}>
 			<Plus />
 			<span>Nueva unidad</span>
 		</button>
 	</HeaderActions>
 
-	<div class="scroll-area">
+	<div class="scroll-area dynamic" style="--scroll-offset: 10rem; max-width: 600px;">
 		<CardList>
 			{#each units as unit (unit.id)}
 				<UnitCard

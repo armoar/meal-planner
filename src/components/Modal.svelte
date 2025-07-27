@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	export let onClose: () => void;
 	export let title: string;
+	export let maxWidth: string = '600px';
 
 	let modalElement: HTMLDivElement;
 
@@ -45,7 +46,7 @@
 		style="
       background: white;
       width: 100%;
-      max-width: 500px;
+      max-width: {maxWidth};
       max-height: 90vh;
       overflow-y: auto;
       padding: 3.5rem;

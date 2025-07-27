@@ -33,15 +33,15 @@
 		</div>
 		<div class="nutrient">
 			<span class="nutrient-label">Proteínas</span>
-			<span class="nutrient-value">{proteins}g</span>
+			<span class="nutrient-value">{proteins} g</span>
 		</div>
 		<div class="nutrient">
-			<span class="nutrient-label">Carbs</span>
-			<span class="nutrient-value">{carbs}g</span>
+			<span class="nutrient-label">Hidratos</span>
+			<span class="nutrient-value">{carbs} g</span>
 		</div>
 		<div class="nutrient">
-			<span class="nutrient-label">Grasa</span>
-			<span class="nutrient-value">{fat}g</span>
+			<span class="nutrient-label">Grasas</span>
+			<span class="nutrient-value">{fat} g</span>
 		</div>
 	</div>
 
@@ -63,7 +63,8 @@
 		align-items: center;
 		justify-content: space-between;
 		flex-wrap: wrap;
-		gap: 1rem;
+		gap: 3rem;
+        width: 100%;
 	}
 
 	.food-card__main {
@@ -96,6 +97,9 @@
 		align-items: center;
 		flex-wrap: wrap;
 		min-width: 200px;
+        border: 1px solid var(--color-surface-700);
+            border-radius: var(--radius-md);
+            padding: 0.5rem 1.5rem;
 	}
 
 	.nutrient {
@@ -121,6 +125,7 @@
 		.food-card {
 			flex-direction: column;
 			align-items: flex-start;
+            gap: 1rem;
 		}
 
 		.food-card__main {
@@ -138,6 +143,7 @@
 			justify-content: space-between;
 			width: 100%;
 			margin-top: 0.5rem;
+            gap: 0.5rem;
 		}
 
 		.food-card__actions {
@@ -145,5 +151,9 @@
 			width: 100%;
 			justify-content: flex-end;
 		}
+
+        .nutrient-value{
+            font-size: 1rem;
+        }
 	}
 </style>

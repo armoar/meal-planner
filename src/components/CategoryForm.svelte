@@ -132,7 +132,6 @@
 	/* Fila completa para el nombre */
 	.form-full {
 		width: 100%;
-		max-width: 600px;
 	}
 
 	.input {

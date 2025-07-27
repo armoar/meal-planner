@@ -1,3 +1,7 @@
+<script lang="ts">
+	export let maxWidth: string = '600px';
+</script>
+
 <div
 	class="card-list"
 	style="
@@ -7,7 +11,7 @@
   "
 >
 	<div
-		style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 0.5rem; z-index: 1; overflow-y: auto;"
+		style="width: 100%; max-width: {maxWidth}; display: flex; flex-direction: column; gap: 0.5rem; z-index: 1; overflow-y: auto;"
 	>
 		<slot />
 	</div>

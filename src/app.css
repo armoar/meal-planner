@@ -17,7 +17,7 @@
 	/* === 3. Variables globales (modo claro) === */
 	--color-bg: #ffffff;
 	--color-text: #212121;
-	--color-muted: #666666;
+	--color-muted: #8b8b8b;
 	--color-primary-500: #81beff;
 	--color-primary-500-hover: #5496dd;
 	--color-secondary-500: #af99ff;
@@ -290,6 +290,7 @@ label {
 
 .input {
 	padding: 0.5rem;
+	padding-right: 2.5rem; /* Para los select*/
 	border-radius: var(--radius-sm);
 	border: 1px solid #ccc;
 	width: 100%;
@@ -305,6 +306,32 @@ label {
 	/* borde del color primario */
 	box-shadow: 0 0 0 1px rgba(107, 173, 243, 0.4);
 	/* halo suave */
+}
+
+.input::placeholder {
+	color: var(--color-muted);
+}
+
+.select {
+	padding: 0.5rem;
+	border-radius: var(--radius-sm);
+	border: 1px solid #ccc;
+	width: 100%;
+	font-size: 1rem;
+	max-width: 100%;
+	background-color: white;
+}
+
+.select:focus {
+	outline: none;
+	/* elimina el borde azul por defecto */
+	border-color: var(--color-primary-500);
+	/* borde del color primario */
+	box-shadow: 0 0 0 1px rgba(107, 173, 243, 0.4);
+	/* halo suave */
+}
+select:invalid {
+	color: var(--color-muted);
 }
 
 /* === Alertas === */
@@ -417,25 +444,7 @@ thead {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	overflow-x: hidden;
-}
-
-.route-container {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	min-height: 0;
-}
-
-.scroll-area {
-	height: calc(100dvh - 10rem); /* ajusta si usas más o menos padding */
-	max-width: 620px;
-	overflow-y: auto;
-	min-height: 0;
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-	padding-bottom: 3rem;
+	overflow: hidden; /* ← Cambiado de overflow-x a overflow completo */
 }
 
 .main-content {
@@ -443,7 +452,22 @@ thead {
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
-	padding: 2rem;
+	padding: 1rem 2rem;
+	min-height: 0;
+}
+
+.scroll-area {
+	min-height: 0;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding-bottom: 3rem;
+}
+
+.scroll-area.dynamic {
+	height: calc(100dvh - var(--scroll-offset, 10rem));
+	padding-bottom: 8rem;
 }
 
 .watermark {
@@ -676,36 +700,36 @@ thead {
 /* Solo afecta en móvil */
 @media (max-width: 768px) {
 	html, body {
-		overflow-x: hidden;
-	  }
-	
-	  .layout,
-	  .layout__main,
-	  .main-content,
-	  .scroll-area,
-	  .card-list,
-	  .route-container {
+		width: 100%;
 		max-width: 100vw;
 		overflow-x: hidden;
-	  }
-	
-	  .card {
+	}
+
+	.layout,
+	.layout__main,
+	.main-content,
+	.scroll-area,
+	.card-list {
+		max-width: 100vw;
+		overflow-x: hidden;
+	}
+
+	.card {
 		max-width: 100%;
 		flex-shrink: 1;
-	  }
-	
-	  /* Asegura que los iconos y badges no se pasen */
-	  svg,
-	  img,
-	  .badge {
+	}
+
+	svg,
+	img,
+	.badge {
 		max-width: 100%;
 		flex-shrink: 1;
-	  }
-	
-	  /* Previene elementos que empujan el ancho */
-	  * {
+	}
+
+	* {
 		box-sizing: border-box;
-	  }
+	}
+
 	.watermark {
 		display: none;
 	}

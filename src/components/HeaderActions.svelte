@@ -1,12 +1,13 @@
 <script lang="ts">
 	export let title: string;
+  export let maxWidth: string | undefined = undefined;
 </script>
 
 <div
 	class="header-actions"
 	style="
-    width: 100%;
-    max-width: 600px;
+    width: 100%; 
+    {maxWidth ? `max-width: ${maxWidth};` : ''}
     display: flex;
     justify-content: space-between;
     align-items: center;

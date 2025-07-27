@@ -81,7 +81,7 @@
 	}
 </script>
 
-<HeaderActions title="Comidas del día">
+<HeaderActions title="Comidas del día" maxWidth="600px">
 	<!--
 	<button class="btn-icon" on:click={openCreateModal}>
 		<Plus />
@@ -90,7 +90,7 @@
 -->
 </HeaderActions>
 
-<div class="scroll-area">
+<div class="scroll-area dynamic" style="--scroll-offset: 10rem; max-width: 600px;">
 	<CardList>
 		{#each mealTypes as mealType (mealType.id)}
 			<MealTypeCard
