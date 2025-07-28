@@ -140,14 +140,14 @@
 	sortOptions={[
 		{ id: 'name-asc', label: 'Nombre A-Z' },
 		{ id: 'name-desc', label: 'Nombre Z-A' },
-		{ id: 'calories-asc', label: 'Calorías Desc.' },
-		{ id: 'calories-desc', label: 'Calorías Asc.' },
-		{ id: 'proteins-asc', label: 'Proteínas Desc.' },
-		{ id: 'proteins-desc', label: 'Proteínas Asc.' },
-		{ id: 'carbs-asc', label: 'Carbohidratos Desc.' },
-		{ id: 'carbs-desc', label: 'Carbohidratos Asc.' },
-		{ id: 'fat-asc', label: 'Grasas Desc.' },
-		{ id: 'fat-desc', label: 'Grasas Asc.' }
+		{ id: 'calories-asc', label: 'Kcal 0-9' },
+		{ id: 'calories-desc', label: 'Kcal 9-0' },
+		{ id: 'proteins-asc', label: 'Proteínas 0-9' },
+		{ id: 'proteins-desc', label: 'Proteínas 9-0' },
+		{ id: 'carbs-asc', label: 'Hidratos 0-9' },
+		{ id: 'carbs-desc', label: 'Hidratos 9-0' },
+		{ id: 'fat-asc', label: 'Grasas 0-9' },
+		{ id: 'fat-desc', label: 'Grasas 9-0' }
 	]}
 	maxWidth="800px"
 	on:search={(e) => (searchTerm = e.detail)}
