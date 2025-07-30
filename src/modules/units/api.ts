@@ -1,13 +1,46 @@
 // Firebase access functions (CRUD)
 import { db } from '$lib/firebase';
-import { collection, addDoc, serverTimestamp, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import type { Unit } from './types';
 
-export const unitsCollection = collection(db, 'units');
+const collectionName = 'units';
+const collectionRef = collection(db, collectionName);
+
+export async function getAllUnits(): Promise<Unit[]> {
+	const snapshot = await getDocs(collectionRef);
+	return snapshot.docs.map((docSnap) => ({
+		id: docSnap.id,
+		...docSnap.data()
+	})) as Unit[];
+}
+
+
+export async function createUnit(unit: Omit<Unit, 'id' | 'createdAt' | 'updatedAt'>) {
+  const docRef = await addDoc(collectionRef, {
+    ...unit,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+
+  return docRef.id;
+}
+
+export async function updateUnit(id: string, data: Partial<Unit>): Promise<void> {
+	const docRef = doc(db, collectionName, id);
+	await updateDoc(docRef, {
+		...data,
+		updatedAt: serverTimestamp()
+	});
+}
+
+export async function deleteUnit(id: string): Promise<void> {
+	const docRef = doc(db, collectionName, id);
+	await deleteDoc(docRef);
+}
 
 export async function initDefaultUnits() {
-  const snapshot = await getDocs(unitsCollection);
-  if (!snapshot.empty) return; // Si ya hay unidades, no hacemos nada
+  const existing = await getAllUnits();
+	if (existing.length > 0) return;
 
   const defaultUnits: Array<Omit<Unit, 'id' | 'createdAt' | 'updatedAt'>> = [
     { name: 'gramos', symbol: 'g', conversionFactor: 1 },
@@ -23,25 +56,5 @@ export async function initDefaultUnits() {
   for (const unit of defaultUnits) {
     await createUnit(unit);
   }
-}
-
-export async function createUnit(unit: Omit<Unit, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
-  const ref = await addDoc(unitsCollection, {
-    ...unit,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
-  });
-
-  return ref.id;
-}
-
-export async function updateUnit(id: string, data: Partial<Unit>) {
-	const ref = doc(db, 'units', id);
-	await updateDoc(ref, data);
-}
-
-export async function deleteUnit(id: string) {
-	const ref = doc(db, 'units', id);
-	await deleteDoc(ref);
 }
 

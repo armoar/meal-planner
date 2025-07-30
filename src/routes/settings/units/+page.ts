@@ -1,21 +1,15 @@
 import { getDocs } from 'firebase/firestore';
-import { unitsCollection, initDefaultUnits } from '$modules/units/api';
+import { getAllUnits, initDefaultUnits } from '$modules/units/api';
 import type { Unit } from '$modules/units/types';
+import type { PageLoad } from './$types';
 
-export const load = async () => {
-  // Creamos unidades por defecto si no existen
-  await initDefaultUnits();
+export const load: PageLoad = async () => {
+	await initDefaultUnits();
+	const units = await getAllUnits();
 
-  // Obtenemos las unidades actualizadas
-  const snapshot = await getDocs(unitsCollection);
-
-  const units: Unit[] = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data()
-  })) as Unit[];
-
-  units.sort((a, b) => a.name.localeCompare(b.name));
+	// Orden alfabético por nombre (ya con tildes y mayúsculas)
+  units.sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
 
   return { units };
 
-};
+}
