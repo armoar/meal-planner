@@ -23,12 +23,13 @@ export async function getAllFoods(): Promise<Food[]> {
 }
 
 // Crear un nuevo alimento
-export async function createFood(data: Omit<Food, 'id' | 'createdAt' | 'updatedAt'>): Promise<void> {
-	await addDoc(collectionRef, {
+export async function createFood(data: Omit<Food, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+	const docRef = await addDoc(collectionRef, {
 		...data,
 		createdAt: serverTimestamp(),
 		updatedAt: serverTimestamp()
 	});
+	return docRef.id;
 }
 
 // Actualizar un alimento existente

@@ -42,6 +42,7 @@
 		)
 		.filter((f) => selectedCategory === '' || f.categoryId === selectedCategory)
 		.sort((a, b) => {
+			if (newCreatedId) return 0;
 			switch (sortOption) {
 				case 'name-asc':
 					return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' });
@@ -71,10 +72,10 @@
 	async function handleCreateFood(event: CustomEvent<FoodFormData>) {
 		const formData = event.detail;
 
-		await createFood(formData);
+		const id = await createFood(formData);
 
 		const newFood: Food = {
-			id: crypto.randomUUID(), // Este ID es temporal, luego puedes obtener el real si lo necesitas
+			id,
 			...formData,
 			createdAt: Timestamp.fromDate(new Date()),
 			updatedAt: Timestamp.fromDate(new Date())

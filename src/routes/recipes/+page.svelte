@@ -47,6 +47,7 @@
 				)
 		)
 		.sort((a, b) => {
+			if (newCreatedId) return 0;
 			switch (sortOption) {
 				case 'name-asc':
 					return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' });

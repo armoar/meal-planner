@@ -13,7 +13,9 @@
 		Tags,
 		Scale,
 		Utensils,
-		CookingPot
+		CookingPot,
+		Users
+
 	} from 'lucide-svelte';
 	import { page } from '$app/stores';
 	import { fade } from 'svelte/transition';
@@ -30,9 +32,11 @@
 	];
 
 	const configItems = [
+		{ href: '/settings/diners', label: 'Comensales', icon: Users },
 		{ href: '/settings/categories', label: 'Categorías', icon: Tags },
 		{ href: '/settings/units', label: 'Unidades', icon: Scale },
 		{ href: '/settings/meal-types', label: 'Comidas del día', icon: Utensils }
+		
 	];
 
 	export const isMobile = writable(false);
