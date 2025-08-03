@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { X } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
 	import type { Food } from '$modules/foods/types';
 	import FiltersRow from './FiltersRow.svelte';
+	import Modal from './Modal.svelte'; // Ruta según tu estructura
 
 	export let open: boolean;
 	export let foods: Food[] = [];
-
 	export let categories: { id: string; name: string; icon: string }[] = [];
 
 	const dispatch = createEventDispatcher();
@@ -20,9 +19,7 @@
 		return matchesName && matchesCategory;
 	});
 
-	$: visibleFoods = searchTerm.trim()
-		? filteredFoods // si se está buscando, se muestra todo el resultado filtrado
-		: filteredFoods.slice(0, itemsToShow); // paginación
+	$: visibleFoods = searchTerm.trim() ? filteredFoods : filteredFoods.slice(0, itemsToShow);
 
 	function selectFood(food: FoodPreview) {
 		dispatch('select', food);
@@ -43,106 +40,68 @@
 </script>
 
 {#if open}
-	<div class="modal-overlay">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2>Seleccionar Alimento</h2>
-				<button
-					class="btn-text"
-					on:click={() => (open = false)}
-					style="position: absolute; top: 2rem; right: 2.5rem;"
-					aria-label="Cerrar modal"
-				>
-					<X />
-				</button>
-			</div>
+	<Modal title="Seleccionar Alimento" onClose={() => (open = false)} maxWidth="600px">
+		<!-- Filtros (buscador y categoría) -->
+		<FiltersRow
+			showSort={false}
+			maxWidth="100%"
+			filterOptions={categories}
+			on:search={(e) => (searchTerm = e.detail)}
+			on:filter={(e) => (selectedCategoryId = e.detail)}
+		/>
 
-			<FiltersRow
-				showSort={false}
-				maxWidth="100%"
-				filterOptions={categories}
-				on:search={(e) => (searchTerm = e.detail)}
-				on:filter={(e) => (selectedCategoryId = e.detail)}
-			/>
-
-			<div class="food-list">
-				{#if filteredFoods.length === 0}
-					<p style="color: var(--color-muted); text-align: center; margin-top: 1rem;">
-						No se han encontrado alimentos.
-					</p>
-				{:else}
-					{#each visibleFoods as food}
-						<button type="button" class="card food-card" on:click={() => selectFood(food)}>
-							<div class="food-card__main">
-								<div class="food-card__icon" style="background-color: {food.categoryColor}">
-									{food.categoryIcon}
-								</div>
-								<h3 class="food-card__name">{food.name}</h3>
+		<!-- Lista de alimentos -->
+		<div class="food-list">
+			{#if filteredFoods.length === 0}
+				<p class="no-results">No se han encontrado alimentos.</p>
+			{:else}
+				{#each visibleFoods as food}
+					<button type="button" class="card food-card" on:click={() => selectFood(food)}>
+						<div class="food-card__main">
+							<div class="food-card__icon" style="background-color: {food.categoryColor}">
+								{food.categoryIcon}
 							</div>
+							<h3 class="food-card__name">{food.name}</h3>
+						</div>
 
-							<div class="food-card__nutrients">
-								<div class="nutrient">
-									<span class="nutrient-label">Kcal</span>
-									<span class="nutrient-value">{food.calories}</span>
-								</div>
-								<div class="nutrient">
-									<span class="nutrient-label">Proteínas</span>
-									<span class="nutrient-value">{food.proteins} g</span>
-								</div>
-								<div class="nutrient">
-									<span class="nutrient-label">Hidratos</span>
-									<span class="nutrient-value">{food.carbs} g</span>
-								</div>
-								<div class="nutrient">
-									<span class="nutrient-label">Grasas</span>
-									<span class="nutrient-value">{food.fat} g</span>
-								</div>
+						<div class="food-card__nutrients">
+							<div class="nutrient">
+								<span class="nutrient-label">Kcal</span>
+								<span class="nutrient-value">{food.calories}</span>
 							</div>
-						</button>
-					{/each}
-				{/if}
-				{#if !searchTerm && filteredFoods.length > itemsToShow}
-					<button
-						class="btn-secondary"
-						style="margin-top: 1rem;"
-						on:click={() => (itemsToShow += 50)}
-						aria-label="Cargar más alimentos"
-					>
-						Cargar más
+							<div class="nutrient">
+								<span class="nutrient-label">Proteínas</span>
+								<span class="nutrient-value">{food.proteins} g</span>
+							</div>
+							<div class="nutrient">
+								<span class="nutrient-label">Hidratos</span>
+								<span class="nutrient-value">{food.carbs} g</span>
+							</div>
+							<div class="nutrient">
+								<span class="nutrient-label">Grasas</span>
+								<span class="nutrient-value">{food.fat} g</span>
+							</div>
+						</div>
 					</button>
-				{/if}
-			</div>
+				{/each}
+			{/if}
+
+			<!-- Botón para paginación -->
+			{#if !searchTerm && filteredFoods.length > itemsToShow}
+				<button
+					class="btn-secondary"
+					style="margin-top: 1rem;"
+					on:click={() => (itemsToShow += 50)}
+					aria-label="Cargar más alimentos"
+				>
+					Cargar más
+				</button>
+			{/if}
 		</div>
-	</div>
+	</Modal>
 {/if}
 
 <style>
-	.modal-overlay {
-		position: fixed;
-		inset: 0;
-		background: rgba(0, 0, 0, 0.5);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: var(--z-modal);
-	}
-
-	.modal-content {
-		background: white;
-		border-radius: var(--radius-md);
-		padding: 1rem;
-		width: 90%;
-		max-width: 500px;
-		box-shadow: var(--shadow-lg);
-	}
-
-	.modal-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 1rem;
-	}
-
 	.food-list {
 		display: flex;
 		flex-direction: column;
@@ -154,9 +113,8 @@
 	.food-card {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		gap: 3rem;
+		justify-content: center;
+		gap: 1rem;
 		width: 100%;
 	}
 
@@ -181,18 +139,19 @@
 	.food-card__name {
 		font-size: 1rem;
 		font-weight: 600;
+		text-align: left;
 	}
 
 	.food-card__nutrients {
 		display: flex;
-		gap: 1.5rem;
+		gap: 1rem;
 		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap;
 		min-width: 200px;
 		border: 1px solid var(--color-surface-700);
 		border-radius: var(--radius-md);
-		padding: 0.5rem 1.5rem;
+		padding: 0.5rem 1rem;
 	}
 
 	.nutrient {
@@ -207,5 +166,17 @@
 		font-weight: 600;
 		font-size: 0.9rem;
 		color: var(--color-text);
+	}
+
+	.no-results {
+		color: var(--color-muted);
+		text-align: center;
+		margin-top: 1rem;
+	}
+
+	@media (max-width: 768px) {
+		.food-card__nutrients {
+			display: none;
+		}
 	}
 </style>

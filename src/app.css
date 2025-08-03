@@ -258,6 +258,16 @@ button {
 	transition: all 0.2s ease-in-out;
 }
 
+.btn-icon-remove{
+	color: var(--color-error-500);
+}
+
+.btn-icon-remove:hover{
+	color: var(--color-error-500-hover);
+}
+
+
+
 /* === Formulario === */
 
 .form-error {

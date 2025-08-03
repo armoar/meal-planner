@@ -4,6 +4,8 @@ export interface RecipeIngredient {
 	foodId: string;
 	quantity: number; // cantidad total para toda la receta
 	unit: string;
+	categoryIcon?: string;
+	categoryColor?: string;
 }
 
 export interface Recipe {

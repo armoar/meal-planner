@@ -29,11 +29,14 @@
 	}
 </script>
 
-<div class="ingredient-pill">
-	<div class="ingredient-pill__main">
-		<p class="ingredient-pill__name">{foodName}</p>
+<div class="food-pill">
+	<div class="food-pill__main">
+		<div class="food-pill__icon" style="background-color: {ingredient.categoryColor}">
+			{ingredient.categoryIcon}
+		</div>
+		<div class="food-pill__name">{foodName}</div>
 
-		<div class="ingredient-pill__controls">
+		<div class="food-pill__controls">
 			<input
 				type="number"
 				min="0"
@@ -41,7 +44,7 @@
 				class="input"
 				value={ingredient.quantity}
 				on:input={updateQuantity}
-				style="max-width: 5rem;"
+				style="padding-right: 0;"
 			/>
 			<select class="select" bind:value={ingredient.unit} on:change={updateUnit}>
 				{#each units as u}
@@ -50,41 +53,68 @@
 			</select>
 		</div>
 	</div>
-
-	<button class="btn-icon-warning" on:click={() => dispatch('remove')} aria-label="Eliminar ingrediente">
-		<X size="16" />
+	<button
+		type="button"
+		class="btn-icon-remove"
+		on:click={() => dispatch('remove')}
+		aria-label="Eliminar ingrediente"
+		style="width: 1.75rem; height: 1.75rem; padding: 0;"
+	>
+		<X />
 	</button>
 </div>
 
 <style>
-	.ingredient-pill {
+	.food-pill {
+		width: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		background-color: var(--color-surface-500);
+		background-color: white;
 		padding: 0.75rem 1rem;
 		border-radius: var(--radius-md);
 		margin-bottom: 0.5rem;
 		gap: 1rem;
 	}
 
-	.ingredient-pill__main {
+	.food-pill__main {
+		width: 100%;
 		flex: 1;
 		display: flex;
-		flex-direction: column;
-		gap: 0.3rem;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
 	}
 
-	.ingredient-pill__name {
+	.food-pill__icon {
+		width: 2rem;
+		height: 2rem;
+		border-radius: 9999px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1rem;
+		flex-shrink: 0;
+	}
+
+	.food-pill__name {
 		font-weight: 600;
 		font-size: 0.95rem;
 		color: var(--color-text);
 		margin: 0;
 	}
 
-	.ingredient-pill__controls {
+	.food-pill__controls {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
+	}
+
+	@media (max-width: 768px) {
+		.food-pill__main {
+			flex-direction: column;
+			align-items: flex-start;
+		}
 	}
 </style>
