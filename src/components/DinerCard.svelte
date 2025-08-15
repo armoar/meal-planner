@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Edit, Trash, User } from 'lucide-svelte';
+	import { CircleCheckBig, Edit, Trash, User } from 'lucide-svelte';
 
 	export let name: string;
 	export let caloriesObjective: number | undefined;
@@ -15,36 +15,42 @@
 <div class="card {isNew ? 'highlight' : ''} diner-card">
 	<!-- Parte izquierda: nombre -->
 	<div class="diner-card__main">
-        <div class="diner-card__icon">
+		<div class="diner-card__icon">
 			<User style="width: 1.1rem; height: 1.1rem;" />
 		</div>
 		<h3 class="diner-card__name">{name}</h3>
 	</div>
 
-	<!-- Parte derecha: objetivos nutricionales -->
-	<div class="diner-card__nutrients">
+	<div class="objectives__icon">
+		<CircleCheckBig style="width: 2rem; height: 2rem;" 
+		aria-label="Objetivos nutricionales"
+		/>
+	</div>
+
+	<div class="diner-card__objectives">
 		{#if caloriesObjective !== undefined}
-			<div class="nutrient">
-				<span class="nutrient-label">Kcal</span>
-				<span class="nutrient-value">{caloriesObjective}</span>
-			</div>
-		{/if}
-		{#if proteinsObjective !== undefined}
-			<div class="nutrient">
-				<span class="nutrient-label">Proteínas</span>
-				<span class="nutrient-value">{proteinsObjective} g</span>
+			<div class="objective">
+				<span class="objective-label">Kcal</span>
+				<span class="objective-value colorCalories">{caloriesObjective}</span>
 			</div>
 		{/if}
 		{#if carbsObjective !== undefined}
-			<div class="nutrient">
-				<span class="nutrient-label">Hidratos</span>
-				<span class="nutrient-value">{carbsObjective} g</span>
+			<div class="objective">
+				<span class="objective-label">Hidratos</span>
+				<span class="objective-value colorCarbs">{carbsObjective} g</span>
 			</div>
 		{/if}
+		{#if proteinsObjective !== undefined}
+			<div class="objective">
+				<span class="objective-label">Proteínas</span>
+				<span class="objective-value colorProteins">{proteinsObjective} g</span>
+			</div>
+		{/if}
+
 		{#if fatObjective !== undefined}
-			<div class="nutrient">
-				<span class="nutrient-label">Grasas</span>
-				<span class="nutrient-value">{fatObjective} g</span>
+			<div class="objective">
+				<span class="objective-label">Grasas</span>
+				<span class="objective-value colorFat">{fatObjective} g</span>
 			</div>
 		{/if}
 	</div>
@@ -78,7 +84,7 @@
 		align-items: center;
 		justify-content: space-between;
 		flex-wrap: wrap;
-		gap: 3rem;
+		gap: 1.5rem;
 		width: 100%;
 	}
 
@@ -87,10 +93,10 @@
 		align-items: center;
 		gap: 0.75rem;
 		flex: 1;
-		min-width: 180px;
+		min-width: 160px;
 	}
 
-    .diner-card__icon {
+	.diner-card__icon {
 		width: 2.5rem;
 		height: 2.5rem;
 		border-radius: 9999px;
@@ -107,7 +113,7 @@
 		color: var(--color-text);
 	}
 
-	.diner-card__nutrients {
+	.diner-card__objectives {
 		display: flex;
 		gap: 1.5rem;
 		justify-content: center;
@@ -119,7 +125,17 @@
 		padding: 0.5rem 1.5rem;
 	}
 
-	.nutrient {
+	.objectives__icon {
+		width: 2rem;
+		height: 2rem;
+		border-radius: 9999px;
+		color: var(--color-muted);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.objective {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -127,10 +143,9 @@
 		color: var(--color-muted);
 	}
 
-	.nutrient-value {
+	.objective-value {
 		font-weight: 600;
 		font-size: 0.9rem;
-		color: var(--color-text);
 	}
 
 	.diner-card__actions {
@@ -150,7 +165,7 @@
 			gap: 0.5rem;
 		}
 
-		.diner-card__nutrients {
+		.diner-card__objectives {
 			justify-content: space-between;
 			width: 100%;
 			margin-top: 0.5rem;
@@ -163,8 +178,12 @@
 			justify-content: flex-end;
 		}
 
-		.nutrient-value {
+		.objective-value {
 			font-size: 1rem;
+		}
+
+		.objectives__icon{
+			display: none;
 		}
 	}
 </style>

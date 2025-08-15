@@ -29,19 +29,19 @@
 	<div class="food-card__nutrients">
 		<div class="nutrient">
 			<span class="nutrient-label">Kcal</span>
-			<span class="nutrient-value">{calories}</span>
-		</div>
-		<div class="nutrient">
-			<span class="nutrient-label">Proteínas</span>
-			<span class="nutrient-value">{proteins} g</span>
+			<span class="nutrient-value colorCalories">{calories}</span>
 		</div>
 		<div class="nutrient">
 			<span class="nutrient-label">Hidratos</span>
-			<span class="nutrient-value">{carbs} g</span>
+			<span class="nutrient-value colorCarbs">{carbs} g</span>
+		</div>
+		<div class="nutrient">
+			<span class="nutrient-label">Proteínas</span>
+			<span class="nutrient-value colorProteins">{proteins} g</span>
 		</div>
 		<div class="nutrient">
 			<span class="nutrient-label">Grasas</span>
-			<span class="nutrient-value">{fat} g</span>
+			<span class="nutrient-value colorFat">{fat} g</span>
 		</div>
 	</div>
 
@@ -113,7 +113,6 @@
 	.nutrient-value {
 		font-weight: 600;
 		font-size: 0.9rem;
-		color: var(--color-text);
 	}
 
 	.food-card__actions {

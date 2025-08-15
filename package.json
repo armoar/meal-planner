@@ -41,6 +41,7 @@
 		"vite": "^7.0.4"
 	},
 	"dependencies": {
+		"echarts": "^6.0.0",
 		"firebase": "^11.10.0",
 		"lucide-svelte": "^0.534.0",
 		"svelte-dnd-action": "^0.9.64",

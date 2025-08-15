@@ -20,10 +20,14 @@
 	--color-muted: #8b8b8b;
 	--color-primary-500: #81beff;
 	--color-primary-500-hover: #5496dd;
-	--color-secondary-500: #af99ff;
-	--color-tertiary-500: #ee99ff;
+	--color-carbs-500: #af99ff;
+	--color-proteins-500: #ee99ff;
+	--color-fat-500: #ffbb00;
+	--color-success-200: #dff8f1;
 	--color-success-500: #41b99b;
+	--color-warning-200: #fcefcd;
 	--color-warning-500: #fdcd49;
+	--color-error-200: #fcdbdb;
 	--color-error-500: #f25f5f;
 	--color-error-500-hover: #cf3030;
 	--color-surface-500: #f3f3f3;
@@ -49,6 +53,22 @@
 	--z-header: 1000;
 	--z-modal: 1100;
 	--z-toast: 1200;
+}
+
+.colorCalories{
+	color: var(--color-primary-950);
+}
+
+.colorProteins {
+	color: var(--color-proteins-500);
+}
+
+.colorCarbs {
+	color: var(--color-carbs-500);
+}
+
+.colorFat {
+	color: var(--color-fat-500);
 }
 
 /* === 4. Modo oscuro (preparado) === */
@@ -258,11 +278,11 @@ button {
 	transition: all 0.2s ease-in-out;
 }
 
-.btn-icon-remove{
+.btn-icon-remove {
 	color: var(--color-error-500);
 }
 
-.btn-icon-remove:hover{
+.btn-icon-remove:hover {
 	color: var(--color-error-500-hover);
 }
 
@@ -300,7 +320,8 @@ label {
 
 .input {
 	padding: 0.5rem;
-	padding-right: 2.5rem; /* Para los select*/
+	padding-right: 2.5rem;
+	/* Para los select*/
 	border-radius: var(--radius-sm);
 	border: 1px solid #ccc;
 	width: 100%;
@@ -340,6 +361,7 @@ label {
 	box-shadow: 0 0 0 1px rgba(107, 173, 243, 0.4);
 	/* halo suave */
 }
+
 select:invalid {
 	color: var(--color-muted);
 }
@@ -454,7 +476,8 @@ thead {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	overflow: hidden; /* ← Cambiado de overflow-x a overflow completo */
+	overflow: hidden;
+	/* ← Cambiado de overflow-x a overflow completo */
 }
 
 .main-content {
@@ -709,7 +732,9 @@ thead {
 
 /* Solo afecta en móvil */
 @media (max-width: 768px) {
-	html, body {
+
+	html,
+	body {
 		width: 100%;
 		max-width: 100vw;
 		overflow-x: hidden;

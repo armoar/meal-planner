@@ -31,19 +31,20 @@
 	<div class="recipe-card__nutrients">
 		<div class="nutrient">
 			<span class="nutrient-label">Kcal</span>
-			<span class="nutrient-value">{totalCalories}</span>
-		</div>
-		<div class="nutrient">
-			<span class="nutrient-label">Proteínas</span>
-			<span class="nutrient-value">{totalProteins} g</span>
+			<span class="nutrient-value colorCalories">{totalCalories}</span>
 		</div>
 		<div class="nutrient">
 			<span class="nutrient-label">Hidratos</span>
-			<span class="nutrient-value">{totalCarbs} g</span>
+			<span class="nutrient-value colorCarbs">{totalCarbs} g</span>
 		</div>
 		<div class="nutrient">
+			<span class="nutrient-label">Proteínas</span>
+			<span class="nutrient-value colorProteins">{totalProteins} g</span>
+		</div>
+		
+		<div class="nutrient">
 			<span class="nutrient-label">Grasas</span>
-			<span class="nutrient-value">{totalFat} g</span>
+			<span class="nutrient-value colorFat">{totalFat} g</span>
 		</div>
 	</div>
 
@@ -141,7 +142,6 @@
 	.nutrient-value {
 		font-weight: 600;
 		font-size: 0.9rem;
-		color: var(--color-text);
 	}
 
 	.recipe-card__actions {

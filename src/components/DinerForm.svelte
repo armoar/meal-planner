@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { dinerFormSchema } from '$modules/diners/formSchema';
 	import type { DinerFormData } from '$modules/diners/formSchema';
-	import { z } from 'zod';
+	import DonutChart from '$components/DonutChart.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -12,20 +12,26 @@
 		proteinsObjective: '' as unknown as number,
 		carbsObjective: '' as unknown as number,
 		fatObjective: '' as unknown as number,
-		allergies: {
-			foods: [],
-			categories: []
-		}
+		allergies: { foods: [], categories: [] }
 	};
 
 	export let isEditMode: boolean = false;
 
-	let form: DinerFormData = { ...initialData };
+	let form: DinerFormData = {
+		...initialData,
+		caloriesObjective:
+			initialData.caloriesObjective && initialData.caloriesObjective > 0
+				? initialData.caloriesObjective
+				: 2000,
+		carbsObjective: initialData.carbsObjective ?? 0,
+		proteinsObjective: initialData.proteinsObjective ?? 0,
+		fatObjective: initialData.fatObjective ?? 0
+	};
+
 	let errors: Partial<Record<keyof DinerFormData, string>> = {};
 
 	function handleSubmit() {
 		const result = dinerFormSchema.safeParse(form);
-
 		if (!result.success) {
 			errors = {};
 			for (const issue of result.error.issues) {
@@ -34,231 +40,404 @@
 			}
 			return;
 		}
-
 		dispatch('submit', result.data);
 	}
 
-	function preventInvalidKey(e: KeyboardEvent) {
-		const allowed = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter'];
-		const isDigit = /^[0-9]$/.test(e.key);
-		if (!isDigit && !allowed.includes(e.key)) {
-			e.preventDefault();
-		}
+	let activePreset: '50-30-20' | '40-30-30' | '45-20-35' | null = null;
+
+	function applyPreset(p: { carbsPct: number; proteinsPct: number; fatPct: number }) {
+		const kcal = Number(form.caloriesObjective) || 0;
+		if (kcal <= 0) return;
+
+		form.carbsObjective = Math.round(((p.carbsPct / 100) * kcal) / 4); // 4 kcal/g
+		form.proteinsObjective = Math.round(((p.proteinsPct / 100) * kcal) / 4); // 4 kcal/g
+		form.fatObjective = Math.round(((p.fatPct / 100) * kcal) / 9); // 9 kcal/g
 	}
 
-	type NumericField = 'caloriesObjective' | 'proteinsObjective' | 'carbsObjective' | 'fatObjective';
+	const tolerancePct = 1; // rango de tolerancia (ajústalo a tu gusto)
 
-	function validateIntegerInput(field: NumericField, event: Event) {
-		const inputEl = event.target as HTMLInputElement;
-		const value = inputEl.value;
-		const isValid = /^\d*$/.test(value);
+	$: kcalFromMacros =
+		(Number(form.carbsObjective) || 0) * 4 +
+		(Number(form.proteinsObjective) || 0) * 4 +
+		(Number(form.fatObjective) || 0) * 9;
 
-		if (isValid || value === '') {
-			form[field] = value === '' ? ('' as unknown as number) : parseInt(value, 10) as DinerFormData[typeof field];
-			errors[field] = '';
-		} else {
-			errors[field] = 'Solo se permiten números enteros';
-		}
-	}
+	$: diffKcal = Math.round(kcalFromMacros - (Number(form.caloriesObjective) || 0));
+
+	$: totalKcal = Number(form.caloriesObjective) || 0;
+
+	$: carbsPct = totalKcal
+		? Math.round((((Number(form.carbsObjective) || 0) * 4) / totalKcal) * 100)
+		: 0;
+	$: proteinsPct = totalKcal
+		? Math.round((((Number(form.proteinsObjective) || 0) * 4) / totalKcal) * 100)
+		: 0;
+	$: fatPct = totalKcal
+		? Math.round((((Number(form.fatObjective) || 0) * 9) / totalKcal) * 100)
+		: 0;
+
+	$: sumPct = (kcalFromMacros / (Number(form.caloriesObjective) || 1)) * 100;
+	$: diffPct = sumPct - 100; // + = te pasas, - = te faltan
+	$: diffPctInt = Math.round(diffPct);
+
+	$: statusText =
+		Math.abs(diffPctInt) >= tolerancePct
+			? diffPctInt > 0
+				? `Sobra: ${Math.abs(diffPctInt)}% (${Math.abs(diffKcal)} kcal)`
+				: `Por distribuir: ${Math.abs(diffPctInt)}% (${Math.abs(diffKcal)} kcal)`
+			: '';
+
+	$: showStatus = statusText !== '';
 </script>
 
-<form
-	on:submit|preventDefault={handleSubmit}
-	style="display: flex; flex-direction: column; gap: 1rem;"
->
+<form on:submit|preventDefault={handleSubmit} class="form-root">
 	<!-- Nombre -->
 	<div class="form-full">
 		<label for="name">Nombre del comensal</label>
 		<input id="name" name="name" class="input" bind:value={form.name} placeholder="P. ej. Arturo" />
-		{#if errors.name}
-			<p class="form-error">{errors.name}</p>
-		{/if}
+		{#if errors.name}<p class="form-error">{errors.name}</p>{/if}
 	</div>
 
-	<!-- Objetivos nutricionales -->
-	<div class="form-row">
-		<div class="form-col responsive-inline">
+	<div class="divider"></div>
+
+	<span class="section-title">Objetivos de macronutrientes</span>
+
+	<!-- Calorías -->
+	<div class="macros-header">
+		<div class="calories-row">
 			<label for="calories">Calorías</label>
-			<div class="input-with-unit">
+			<div class="calories-input">
 				<input
 					id="calories"
 					name="calories"
 					class="input"
 					type="number"
-					placeholder="0"
 					min="0"
-					step="any"
-					value={form.caloriesObjective}
-					on:keydown={preventInvalidKey}
-					on:input={(e) => validateIntegerInput('caloriesObjective', e)}
-					style="max-width: 5.5rem;"
+					inputmode="numeric"
+					bind:value={form.caloriesObjective}
+					placeholder="Ej. 2000"
 				/>
-				<span class="unit-label">kcal</span>
+				<span class="unit">kcal</span>
 			</div>
-			{#if errors.caloriesObjective}
-				<p class="form-error">{errors.caloriesObjective}</p>
-			{/if}
+			{#if errors.caloriesObjective}<p class="form-error">{errors.caloriesObjective}</p>{/if}
 		</div>
-		<div class="form-col responsive-inline">
-			<label for="proteins">Proteínas</label>
-			<div class="input-with-unit">
-				<input
-					id="proteins"
-					name="proteins"
-					class="input"
-					type="number"
-					placeholder="0"
-					min="0"
-					step="any"
-					value={form.proteinsObjective}
-					on:keydown={preventInvalidKey}
-					on:input={(e) => validateIntegerInput('proteinsObjective', e)}
-					style="max-width: 5.5rem;"
-				/>
-				<span class="unit-label">g</span>
-			</div>
-			{#if errors.proteinsObjective}
-				<p class="form-error">{errors.proteinsObjective}</p>
-			{/if}
-		</div>
-		<div class="form-col responsive-inline">
-			<label for="carbs">Hidratos</label>
-			<div class="input-with-unit">
-				<input
-					id="carbs"
-					name="carbs"
-					class="input"
-					type="number"
-					placeholder="0"
-					min="0"
-					step="any"
-					value={form.carbsObjective}
-					on:keydown={preventInvalidKey}
-					on:input={(e) => validateIntegerInput('carbsObjective', e)}
-					style="max-width: 5.5rem;"
-				/>
-				<span class="unit-label">g</span>
-			</div>
-			{#if errors.carbsObjective}
-				<p class="form-error">{errors.carbsObjective}</p>
-			{/if}
-		</div>
-		<div class="form-col responsive-inline">
-			<label for="fat">Grasas</label>
-			<div class="input-with-unit">
-				<input
-					id="fat"
-					name="fat"
-					class="input"
-					type="number"
-					placeholder="0"
-					min="0"
-					step="any"
-					value={form.fatObjective}
-					on:keydown={preventInvalidKey}
-					on:input={(e) => validateIntegerInput('fatObjective', e)}
-					style="max-width: 5.5rem;"
-				/>
-				<span class="unit-label">g</span>
-			</div>
-			{#if errors.fatObjective}
-				<p class="form-error">{errors.fatObjective}</p>
-			{/if}
+		
+		<div class="preset-chips">
+			<button
+				type="button"
+				class="chip"
+				on:click={() => {
+					applyPreset({ carbsPct: 50, proteinsPct: 30, fatPct: 20 });
+				}}
+				title="Balanceado (AMDR)">50-30-20</button
+			>
+
+			<button
+				type="button"
+				class="chip"
+				on:click={() => {
+					applyPreset({ carbsPct: 40, proteinsPct: 30, fatPct: 30 });
+				}}
+				title="Zone">40-30-30</button
+			>
+
+			<button
+				type="button"
+				class="chip"
+				on:click={() => {
+					applyPreset({ carbsPct: 45, proteinsPct: 20, fatPct: 35 });
+				}}
+				title="Mediterránea">45-20-35</button
+			>
 		</div>
 	</div>
 
-	<!-- Botón de guardar -->
-	<div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
-		<button type="submit" class="btn">
-			{isEditMode ? 'Guardar cambios' : 'Crear'}
-		</button>
+	<!-- Grid: izquierda Donut, derecha inputs -->
+	<div class="macros-grid">
+		<!-- Donut -->
+		<div class="donut-box">
+			<DonutChart
+				carbs={form.carbsObjective}
+				proteins={form.proteinsObjective}
+				fat={form.fatObjective}
+				totalCalories={form.caloriesObjective}
+				{tolerancePct}
+			/>
+
+			<div class="macro-balance-slot">
+				<span
+					class="macro-balance-hint"
+					class:is-hidden={!showStatus}
+					data-state={diffKcal > 0 ? 'over' : 'under'}
+					aria-live="polite"
+					aria-hidden={!showStatus}
+				>
+					{statusText}
+				</span>
+			</div>
+		</div>
+
+		<!-- Inputs macros -->
+		<div class="macros-inputs">
+			<div class="macro-row">
+				<label for="carbs"
+					>Hidratos {#if totalKcal}
+						({carbsPct}%)
+					{/if}</label
+				>
+				<div class="macro-input carbs">
+					<input
+						id="carbs"
+						name="carbs"
+						class="input"
+						type="number"
+						min="0"
+						step="any"
+						inputmode="decimal"
+						bind:value={form.carbsObjective}
+						placeholder="0"
+					/>
+					<span class="unit">g</span>
+				</div>
+				{#if errors.carbsObjective}<p class="form-error">{errors.carbsObjective}</p>{/if}
+			</div>
+
+			<div class="macro-row">
+				<label for="proteins"
+					>Proteínas {#if totalKcal}
+						({proteinsPct}%)
+					{/if}</label
+				>
+				<div class="macro-input proteins">
+					<input
+						id="proteins"
+						name="proteins"
+						class="input"
+						type="number"
+						min="0"
+						step="any"
+						inputmode="decimal"
+						bind:value={form.proteinsObjective}
+						placeholder="0"
+					/>
+					<span class="unit">g</span>
+				</div>
+				{#if errors.proteinsObjective}<p class="form-error">{errors.proteinsObjective}</p>{/if}
+			</div>
+
+			<div class="macro-row">
+				<label for="fat"
+					>Grasas {#if totalKcal}
+						({fatPct}%)
+					{/if}</label
+				>
+				<div class="macro-input fat">
+					<input
+						id="fat"
+						name="fat"
+						class="input"
+						type="number"
+						min="0"
+						step="any"
+						inputmode="decimal"
+						bind:value={form.fatObjective}
+						placeholder="0"
+					/>
+					<span class="unit">g</span>
+				</div>
+				{#if errors.fatObjective}<p class="form-error">{errors.fatObjective}</p>{/if}
+			</div>
+		</div>
+	</div>
+
+	<div class="actions">
+		<button type="submit" class="btn">{isEditMode ? 'Guardar cambios' : 'Crear'}</button>
 	</div>
 </form>
 
 <style>
-	/* Igual al estilo de FoodForm */
-	.form-row {
-		display: flex;
-		gap: 0.75rem;
-		justify-content: space-between;
-	}
-
-	.form-col {
-		flex: 0 0 auto;
-		width: 10%;
-	}
-
-	.responsive-inline {
+	.form-root {
 		display: flex;
 		flex-direction: column;
-		gap: 0.2rem;
+		gap: 1rem;
 	}
-
 	.form-full {
 		width: 100%;
 	}
-
+	.section-title {
+		font-weight: 600;
+		font-size: 1.15rem;
+		color: var(--color-primary-950);
+	}
 	.input {
 		width: 100%;
 		max-width: 100%;
 		padding: 0.5rem 0.75rem;
 		font-size: 1rem;
 	}
+	.divider {
+		height: 0.8rem;
+		border-top: 1px solid #ccc;
+		margin-top: 1rem;
+	}
 
-	.input-with-unit {
+	.macros-header {
+		display: grid;
+		grid-template-columns: 1fr auto; /* izquierda: input kcal | derecha: chips */
+		gap: 0.75rem 1rem;
+		align-items: end;
+		margin-bottom: 1rem;
+	}
+
+	.calories-row {
 		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		max-width: 320px;
+	}
+	.calories-input {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.5rem;
 		align-items: center;
 	}
-
-	.input-with-unit .input {
-		flex: 1;
-		padding-right: 0.5rem;
+	.preset-chips {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+	}
+	.chip {
+		padding: 0.5rem 0.7rem;
+		border-radius: 999px;
+		border: 1px solid var(--color-surface-700);
+		background: var(--color-surface-500);
+		font-size: 0.85rem;
+		line-height: 1;
+		cursor: pointer;
+	}
+	.chip:hover {
+		filter: brightness(0.98);
 	}
 
-	.unit-label {
-		margin-left: 0.4rem;
+	.unit {
 		color: var(--color-muted);
-		font-size: 0.9rem;
-		white-space: nowrap;
+		font-size: 0.95rem;
 	}
 
-	@media (max-width: 768px) {
-		.responsive-inline {
-			flex-direction: row;
-			align-items: center;
-			justify-content: space-between;
-		}
+	.macros-grid {
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		gap: 1rem;
+		align-items: start;
+	}
+	.donut-box {
+		width: 100%;
+		max-width: 380px;
+	}
+	.macros-inputs {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+	.macro-row {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+	}
+	.macro-input {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.5rem;
+		align-items: center;
+		max-width: 110px;
+	}
 
-		.responsive-inline label {
-			width: 40%;
-			min-width: 90px;
-			margin-bottom: 0;
-		}
+	/* Macro specific styles */
+	.macro-row label[for='carbs'],
+	.macro-input.carbs input {
+		border-color: var(--color-carbs-500);
+	}
 
-		.input-with-unit {
-			flex: 1;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-		}
+	.macro-row label[for='carbs'] {
+		color: var(--color-carbs-500);
+	}
 
-		.input-with-unit .input {
-			flex: 1;
-			min-width: 0;
-			margin-left: 2rem;
-		}
+	.macro-row label[for='proteins'],
+	.macro-input.proteins input {
+		border-color: var(--color-proteins-500);
+	}
 
-		.form-row {
-			flex-direction: column;
-		}
+	.macro-row label[for='proteins'] {
+		color: var(--color-proteins-500);
+	}
 
-		.form-col {
+	.macro-row label[for='fat'],
+	.macro-input.fat input {
+		border-color: var(--color-fat-500);
+	}
+
+	.macro-row label[for='fat'] {
+		color: var(--color-fat-500);
+	}
+
+	.actions {
+		display: flex;
+		justify-content: flex-end;
+		margin-top: 1rem;
+	}
+
+	.macro-balance-slot {
+		height: 1.5rem; /* reserva exactamente 1 línea */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.macro-balance-hint {
+		display: flex;
+		white-space: nowrap; /* evita que ocupe 2 líneas */
+		transition: opacity 160ms ease;
+	}
+
+	.macro-balance-hint.is-hidden {
+		opacity: 0;
+		visibility: hidden; /* mantiene el hueco sin interacción */
+	}
+
+	/* Colores que ya tenías */
+	.macro-balance-hint[data-state='over'] {
+		color: var(--color-error-500);
+	}
+	.macro-balance-hint[data-state='under'] {
+		color: var(--color-error-500);
+	}
+
+	@media (max-width: 820px) {
+		.macros-grid {
+			grid-template-columns: 1fr;
+		}
+		.donut-box {
 			max-width: 100%;
-			width: 100%;
+		}
+		.input {
+			font-size: 0.95rem;
+			padding: 0.45rem 0.6rem;
 		}
 
-		.form-full {
-			max-width: 100%;
+		.calories-input {
+			grid-template-columns: 1fr auto;
+		}
+
+		.macros-header {
+			grid-template-columns: 1fr; /* una columna */
+			gap:2rem;
+		}
+
+		/* input + kcal */
+		.preset-chips {
+			gap: 0.5rem;
+			grid-column: 1 / -1;
+			justify-content: center;
 		}
 	}
 </style>
