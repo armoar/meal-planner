@@ -4,7 +4,7 @@
 	import type { Diner } from '$modules/diners/types';
 	import { BookMarked, Columns3, ChevronRight, ChevronLeft, List } from 'lucide-svelte';
 	import DinerMultiSelect from '$components/diner/DinerMultiSelect.svelte';
-  import { materializeWeeklyPlan, updateWeeklyPlanDiners } from '$modules/weeklyPlans/api';
+	import { materializeWeeklyPlan, updateWeeklyPlanDiners } from '$modules/weeklyPlans/api';
 
 	export let weekStart: Date;
 	export let weekEnd: Date;
@@ -44,37 +44,43 @@
 		if (value) navigateToWeek(parseToDate(value));
 	}
 
+	function openSavedWeeks() {
+		dispatch('openSavedWeeks');
+	}
+
+	console.log('[Header] openSavedWeeks click');
+
 	export let weeklyPlanId: string | null = null;
 
 	async function saveParticipants(ids: string[]) {
-  try {
-    let targetWeeklyPlanId = weeklyPlanId;
-    const startDateString = toISO(weekStart); // 'YYYY-MM-DD'
+		try {
+			let targetWeeklyPlanId = weeklyPlanId;
+			const startDateString = toISO(weekStart); // 'YYYY-MM-DD'
 
-    // Si la semana es virtual, materializamos antes de guardar
-    if (!targetWeeklyPlanId) {
-      const result = await materializeWeeklyPlan(startDateString, ids);
-      targetWeeklyPlanId = result.weeklyPlanId;   // <- no 'id'
-      weeklyPlanId = targetWeeklyPlanId;          // opcional: fija localmente
-      // opcional: avisa al padre si quieres refrescar
-      // dispatch('materialized', { weeklyPlanId });
-    }
+			// Si la semana es virtual, materializamos antes de guardar
+			if (!targetWeeklyPlanId) {
+				const result = await materializeWeeklyPlan(startDateString, ids);
+				targetWeeklyPlanId = result.weeklyPlanId; // <- no 'id'
+				weeklyPlanId = targetWeeklyPlanId; // opcional: fija localmente
+				// opcional: avisa al padre si quieres refrescar
+				// dispatch('materialized', { weeklyPlanId });
+			}
 
-    // Payload { dinerId, included }
-    const dinersPayload: Array<{ dinerId: string; included: boolean }> = diners.map((d) => ({
-      dinerId: d.id,
-      included: ids.includes(d.id)
-    }));
+			// Payload { dinerId, included }
+			const dinersPayload: Array<{ dinerId: string; included: boolean }> = diners.map((d) => ({
+				dinerId: d.id,
+				included: ids.includes(d.id)
+			}));
 
-    // 3 argumentos: id, payload, startDateString
-    await updateWeeklyPlanDiners(targetWeeklyPlanId, dinersPayload, startDateString);
+			// 3 argumentos: id, payload, startDateString
+			await updateWeeklyPlanDiners(targetWeeklyPlanId, dinersPayload, startDateString);
 
-    // sincroniza selección visible en la UI
-    dispatch('changeVisibleDiners', { visibleDinerIds: ids });
-  } catch (e) {
-    console.error('Error al guardar comensales de la semana', e);
-  }
-}
+			// sincroniza selección visible en la UI
+			dispatch('changeVisibleDiners', { visibleDinerIds: ids });
+		} catch (e) {
+			console.error('Error al guardar comensales de la semana', e);
+		}
+	}
 
 	function setView(mode: 'weekly' | 'daily') {
 		if (mode !== viewMode) dispatch('changeView', { viewMode: mode });
@@ -122,39 +128,38 @@
 	<!-- Fila 2 -->
 	<div class="planner-header__bottom">
 		<div class="planner-header__bottom-left">
-			<List style="width: 1.1rem; height: 1.1rem; color: var(--color-muted);" />
-			<select class="input" on:change={onSelectMaterializedWeek}>
-				<option value="">Semanas guardadas…</option>
-				{#each [...materializedWeeks].sort((a, b) => parseToDate(b).getTime() - parseToDate(a).getTime()) as w}
-					<option value={typeof w === 'string' ? w : toISO(w)}>
-						{new Intl.DateTimeFormat('es-ES', {
-							day: '2-digit',
-							month: 'short',
-							year: 'numeric'
-						}).format(parseToDate(w))}
-					</option>
-				{/each}
-			</select>
-		</div>
-
-		<div class="planner-header__bottom-center">
-			<button class="btn-icon-secondary" style="border-radius: 9999px;" on:click={prevWeek}>
-				<ChevronLeft size="30px" />
+			<!-- Navegación de fechas -->
+			<button class="btn-icon-secondary round" on:click={prevWeek}>
+				<ChevronLeft size="22" />
 			</button>
 			<div class="week-range">{weekLabel}</div>
-			<button class="btn-icon-secondary" style="border-radius: 9999px;" on:click={nextWeek}>
-				<ChevronRight size="30px" />
+			<button class="btn-icon-secondary round" on:click={nextWeek}>
+				<ChevronRight size="22" />
 			</button>
+
+			<!-- Acciones: semanas guardadas + comensales -->
+			<div class="bottom-actions">
+				<!-- Botón semanas guardadas -->
+				<button class="btn-icon-secondary saved-weeks-btn" type="button" on:click={openSavedWeeks}>
+					<List />
+					<span class="btn-label">Ver semanas guardadas</span>
+				</button>
+
+				<!-- Dropdown comensales con icono delante -->
+				<div class="diner-wrapper">
+					<DinerMultiSelect
+						{diners}
+						selectedIds={visibleDinerIds}
+						label="Comensales"
+						onSave={saveParticipants}
+					/>
+				</div>
+			</div>
 		</div>
 
-		<div class="planner-header__bottom-right">
-			<DinerMultiSelect
-				{diners}
-				selectedIds={visibleDinerIds}
-				label="Comensales"
-				onSave={saveParticipants}
-			/>
-		</div>
+		<!-- Dejamos vacías las otras celdas por si más adelante añadimos algo -->
+		<div class="planner-header__bottom-center"></div>
+		<div class="planner-header__bottom-right"></div>
 	</div>
 </div>
 
@@ -196,6 +201,12 @@
 		gap: 0.5rem;
 	}
 
+	/* Botones redondos para flechas */
+	.round {
+		border-radius: 9999px;
+	}
+
+	/* Alineado y separación en la parte inferior */
 	.planner-header__bottom {
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr;
@@ -207,21 +218,31 @@
 	.planner-header__bottom-left {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
-	}
-
-	.planner-header__bottom-center {
-		display: flex;
-		align-items: center;
 		gap: 0.75rem;
-		margin: 0 auto;
+		flex-wrap: wrap;
 	}
 
-	.planner-header__bottom-left {
+	.bottom-actions {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
+		gap: 0.5rem;
 	}
+
+	/* Botón semanas guardadas */
+	.saved-weeks-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+
+	/* Icono superpuesto delante del dropdown de comensales */
+	.diner-wrapper {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	/* Añade padding-left al trigger del dropdown para no tapar el texto */
 	.week-range {
 		font-weight: 500;
 		min-width: 150px;
@@ -267,16 +288,32 @@
 			gap: 0.75rem;
 		}
 
-		.planner-header__bottom-left,
-		.planner-header__bottom-center,
-		.planner-header__bottom-right {
+		/* Fila de acciones al 50/50 */
+		.bottom-actions {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.5rem;
 			width: 100%;
-			justify-content: flex-start;
 		}
 
-		.planner-header__bottom-center {
+		/* Botón semanas guardadas: solo icono en móvil */
+		.saved-weeks-btn {
 			justify-content: center;
+			width: 100%;
+		}
+		.saved-weeks-btn .btn-label {
+			display: none;
 		}
 
+		/* Dropdown comensales: ocupa 50% y solo icono visible (texto oculto) */
+		.diner-wrapper {
+			width: 100%;
+		}
+		.diner-wrapper :global(button) {
+			width: 100%;
+			justify-content: center;
+			/* Ocultar texto del botón del dropdown sin afectar el icono superpuesto */
+			color: transparent; /* oculta texto si lo hay */
+		}
 	}
 </style>
