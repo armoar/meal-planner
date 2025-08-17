@@ -168,10 +168,23 @@ button {
 	background-color: var(--color-primary-950-hover);
 }
 
+.btn-selected {
+	background-color: var(--color-primary-500) !important; 
+	color: var(--color-primary-950) !important;
+	border-color: var(--color-primary-500) !important;
+	box-shadow: none !important;
+}
+
+.btn-selected:hover {
+	transform: none !important;
+	box-shadow: none !important;
+}
+
+
 /* === 2. Botón secundario === */
 .btn-secondary {
 	background-color: transparent;
-	border: 2px solid var(--color-primary-950);
+	border: 1px solid var(--color-primary-950);
 	color: var(--color-primary-950);
 	box-shadow: var(--shadow-md);
 }
@@ -179,7 +192,8 @@ button {
 .btn-secondary:hover {
 	box-shadow: var(--shadow-lg);
 	transform: translateY(-2px);
-	color: var(--color-primary-950-hover);
+	border-color: var(--color-primary-950-hover);
+	color: white;
 }
 
 /* === 3. Botón para acciones peligrosas === */
@@ -231,7 +245,7 @@ button {
 /* Utiliza .btn-icon junto a un <Icon /> como primer hijo */
 
 .btn-icon-secondary {
-	border: 2px solid var(--color-primary-950);
+	border: 1px solid var(--color-primary-950);
 	border-radius: var(--radius-md);
 	background-color: transparent;
 	color: var(--color-primary-950);

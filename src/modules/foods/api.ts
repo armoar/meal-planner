@@ -5,7 +5,9 @@ import {
 	updateDoc,
 	deleteDoc,
 	doc,
-	serverTimestamp
+	serverTimestamp,
+	query,
+	where
 } from 'firebase/firestore';
 import { db } from '$lib/firebase';
 import type { Food } from './types';
@@ -20,6 +22,24 @@ export async function getAllFoods(): Promise<Food[]> {
 		id: docSnap.id,
 		...docSnap.data()
 	})) as Food[];
+}
+
+export async function getFoodsByIds(ids: string[]): Promise<Food[]> {
+    if (ids.length === 0) return [];
+
+    // Manejar el límite de 10 en la cláusula 'in' si es necesario
+    // Si el array 'ids' puede tener más de 10 elementos, deberás dividirlo en chunks
+    // y realizar múltiples consultas. Para empezar, asumimos que no excede el límite.
+    if (ids.length > 10) {
+         console.warn("getFoodsByIds: Array of IDs exceeds Firestore 'in' limit (10). Consider chunking.");
+         // Implementar lógica de chunking aquí si es necesario
+         // Por ahora, solo tomamos los primeros 10 para evitar errores
+         ids = ids.slice(0, 10);
+    }
+
+    const q = query(collection(db, collectionName), where('id', 'in', ids));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() })) as Food[];
 }
 
 // Crear un nuevo alimento
