@@ -1,7 +1,7 @@
 <script lang="ts">
 	// 📦 Importación de componentes reutilizables
 	import DinerCard from '$components/diner/DinerCard.svelte';
-	import DinerForm from '$components/DinerForm.svelte';
+	import DinerForm from '$components/diner/DinerForm.svelte';
 	import Modal from '$components/Modal.svelte';
 	import HeaderActions from '$components/HeaderActions.svelte';
 	import CardList from '$components/CardList.svelte';

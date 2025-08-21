@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { Meal } from '$modules/weeklyPlans/types';
+    import type { Meal } from '$modules/meals/types';
     import { Trash2 } from 'lucide-svelte';
-    import { deleteMeal } from '$modules/weeklyPlans/api';
+    import { deleteMeal } from '$modules/meals/api';
   
     export let meal: Meal;
   
