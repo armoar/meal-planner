@@ -90,7 +90,6 @@
 		align-items: center;
 		gap: 0.5rem;
 		flex: 1;
-
 	}
 
 	.search {

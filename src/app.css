@@ -223,7 +223,8 @@ button {
 }
 
 .btn-text:hover {
-	font-weight: 700;
+	color: var(--color-primary-950-hover);
+	text-decoration: underline;
 	transition: all 0.2s ease-in-out;
 }
 
@@ -288,7 +289,7 @@ button {
 }
 
 .btn-icon-text:hover {
-	font-weight: 700;
+	color: var(--color-primary-950-hover);
 	transition: all 0.2s ease-in-out;
 }
 
