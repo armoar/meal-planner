@@ -216,7 +216,9 @@
 							size="18"
 						/>{/if}
 					<span class="year-label">{g.year}</span>
-					<span class="pill">{g.months.reduce((s, mm) => s + mm.plans.length, 0)} semanas creadas</span>
+					<span class="pill"
+						>{g.months.reduce((s, mm) => s + mm.plans.length, 0)} semanas creadas</span
+					>
 				</button>
 
 				{#if expandedYears.has(g.year)}
@@ -283,7 +285,6 @@
 
 	:global(.filters-row) {
 		width: auto !important; /* sobreescribe el 100% interno */
-		max-width: none !important;
 		flex: 1 1 auto; /* ocupa solo lo necesario y permite hueco */
 		min-width: 0;
 	}
@@ -300,6 +301,7 @@
 
 	.scroll-area {
 		gap: 0.5rem;
+		z-index: 1;
 	}
 	.year-block {
 		padding: 1rem;
@@ -340,24 +342,24 @@
 		}
 		.filters-row-weekly-plans {
 			gap: 0;
-      flex-wrap: wrap;
-	  margin-bottom: 1rem;
-    }
-    .expand-controls {
-      width: 100%;
-      justify-content: flex-start;
-    }
-	.year-row {
-		padding-bottom: 1.5rem;
-	}
-	.months {
-		padding: 0rem;
-	}
-	.month-block {
-		padding-top: 1rem;
-	}
-	.weekly-plans {
-		padding-bottom: 1.5rem;
-	}
+			flex-wrap: wrap;
+			margin-bottom: 1rem;
+		}
+		.expand-controls {
+			width: 100%;
+			justify-content: flex-start;
+		}
+		.year-row {
+			padding-bottom: 1rem;
+		}
+		.months {
+			padding: 0rem;
+		}
+		.month-block {
+			padding-top: 1rem;
+		}
+		.weekly-plans {
+			padding-bottom: 1.5rem;
+		}
 	}
 </style>
