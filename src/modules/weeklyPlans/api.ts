@@ -25,6 +25,7 @@ import {
   } from './types';
   import type { DailyPlan } from '$modules/dailyPlans/types';
   import type { Meal } from '$modules/meals/types';
+import type { Diner } from '$modules/diners/types';
   
   // ==== Colecciones (raíz) ====
   const WEEKLY_PLANS = 'weeklyPlans';
@@ -89,7 +90,11 @@ import {
    * Crea un weeklyPlan real (sin meals) con sus 7 dailyPlans (lunes→domingo).
    * Unicidad por startDate garantizada con un "documento llave" en WEEKLY_PLAN_KEYS.
    */
-  export async function createWeeklyPlan(startDate: string, dinerIds: string[]): Promise<{ id: string }> {
+  export async function createWeeklyPlan(
+    startDate: string,
+    dinerIds: string[],
+    allDiners?: Diner[]            // <— NUEVO parámetro opcional
+  ): Promise<{ id: string }> {
     if (!isMonday(startDate)) {
       throw new Error('La fecha de inicio debe ser lunes.');
     }
@@ -99,7 +104,21 @@ import {
     const keyRef = doc(db, WEEKLY_PLAN_KEYS, startDate); // llave única por startDate
   
     const endDate = addDays(startDate, 6);
-    const dinersPersist: WeeklyPlanDiner[] = dinerIds.map((dinerId) => ({ dinerId, included: true }));
+  
+    // ======= SOLO ESTO CAMBIA =======
+    // Si recibimos todos los comensales: guardamos TODOS con included según dinerIds.
+    // Si no, mantenemos el comportamiento anterior (solo los seleccionados con included:true).
+    let dinersPersist: WeeklyPlanDiner[];
+    if (allDiners && allDiners.length > 0) {
+      const selected = new Set(dinerIds);
+      dinersPersist = allDiners.map((d) => ({
+        dinerId: d.id,
+        included: selected.has(d.id)
+      }));
+    } else {
+      dinersPersist = dinerIds.map((dinerId) => ({ dinerId, included: true }));
+    }
+    // ======= FIN CAMBIO =======
   
     const newId = await runTransaction(db, async (tx) => {
       // 1) Comprobar/crear llave única

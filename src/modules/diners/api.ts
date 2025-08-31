@@ -16,11 +16,13 @@ const collectionRef = collection(db, collectionName);
 // Obtener todos los comensales
 export async function getAllDiners(): Promise<Diner[]> {
     const snapshot = await getDocs(collectionRef);
-    return snapshot.docs.map((docSnap) => ({
-        id: docSnap.id,
-        ...docSnap.data()
-    })) as Diner[];
-}
+    const items = snapshot.docs.map((docSnap) => {
+      const data = docSnap.data() as Omit<Diner, 'id'>;
+      return { id: docSnap.id, ...data };
+    });
+    // opcional: filtra registros sin name para evitar problemas
+    return items.filter((d) => typeof (d as any).name === 'string' && (d as any).name.trim().length > 0) as Diner[];
+  }
 
 // Crear un nuevo comensal
 export async function createDiner(data: Omit<Diner, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {

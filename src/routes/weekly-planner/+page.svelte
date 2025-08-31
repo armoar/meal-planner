@@ -4,7 +4,7 @@
 	import FiltersRow from '$components/FiltersRow.svelte';
 	import CardList from '$components/CardList.svelte';
 	import WeeklyPlanCard from '$components/weekly-planner/WeeklyPlanCard.svelte';
-	import CreatePlanModal from '$components/weekly-planner/CreateWeeklyPlanModal.svelte';
+	import WeeklyPlanForm from '$components/weekly-planner/WeeklyPlanForm.svelte';
 	import { Plus, ChevronDown, ChevronRight } from 'lucide-svelte';
 	import { deleteWeeklyPlan } from '$modules/weeklyPlans/api';
 	import { goto } from '$app/navigation';
@@ -16,7 +16,6 @@
 		wipeOnlyMeals
 	} from '$modules/weeklyPlans/devSeed';
 
-	// flag DEV
 	const IS_DEV = import.meta.env.DEV;
 
 	let statusMsg = '';
@@ -67,9 +66,11 @@
 		}
 	}
 
-	export let data: PageData; // { plans, grouped, yearsSorted, monthsByYear }
+	export let data: PageData;
 
-	let plans: WeeklyPlan[] = data.plans;
+	// usar los planes que vienen de load
+	let plans: WeeklyPlan[] = data.plans as WeeklyPlan[];
+	let filteredPlans: WeeklyPlan[] = [];
 
 	// ===== Filtros mínimos (fechas) =====
 	let searchTerm = '';
@@ -112,7 +113,7 @@
 			year: y,
 			months: [...map.get(y)!.keys()].sort(cmp).map((m) => ({
 				month: m,
-				plans: map.get(y)!.get(m)! // ya preserva el orden de filteredPlans
+				plans: map.get(y)!.get(m)!
 			}))
 		}));
 	}
@@ -177,14 +178,14 @@
 <!--
 	{#if IS_DEV}
 	  <div class="card" style="max-width:960px; margin-bottom:.5rem; display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;">
-		<strong>DEV:</strong>
-		<button class="btn-icon" on:click={handleSeed} disabled={isWorking}>Seed dataset</button>
-		<button class="btn-icon-secondary" on:click={handleWipeMeals} disabled={isWorking}>Borrar SOLO meals</button>
-		<button class="btn-icon-warning" on:click={handleNuke} disabled={isWorking}>Borrar TODO en cascada</button>
-		{#if statusMsg}<span style="margin-left:.5rem; color: var(--color-muted);">{statusMsg}</span>{/if}
+	  <strong>DEV:</strong>
+	  <button class="btn-icon" on:click={handleSeed} disabled={isWorking}>Seed dataset</button>
+	  <button class="btn-icon-secondary" on:click={handleWipeMeals} disabled={isWorking}>Borrar SOLO meals</button>
+	  <button class="btn-icon-warning" on:click={handleNuke} disabled={isWorking}>Borrar TODO en cascada</button>
+	  {#if statusMsg}<span style="margin-left:.5rem; color: var(--color-muted);">{statusMsg}</span>{/if}
 	  </div>
 	{/if}
--->
+  -->
 <div class="filters-row-weekly-plans">
 	<FiltersRow
 		showSearch={false}
@@ -259,7 +260,14 @@
 	{/if}
 </div>
 
-<CreatePlanModal open={showCreate} on:close={closeCreate} on:created={handleCreated} />
+<WeeklyPlanForm
+	open={showCreate}
+	maxWidth="680px"
+	diners={data.diners}
+	disabledWeeks={data.disabledWeeks}
+	on:close={() => (showCreate = false)}
+	on:created={handleCreated}
+/>
 
 <style>
 	.header-right {

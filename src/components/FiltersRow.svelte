@@ -144,12 +144,6 @@
 	  background-color: white;
 	}
   
-	/* Puedes dejar .select por si aún usas selects nativos en otras vistas */
-	.select {
-	  padding-right: 2.2rem;
-	  background-color: white;
-	}
-  
 	@media (max-width: 768px) {
 	  .filters-row {
 		flex-direction: column;
